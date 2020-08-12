@@ -1,0 +1,16 @@
+#' GWAS data
+#'
+#' A dataset containing GWAS data
+#'
+#' @format Dataframe, one row per SNP, with 6 columns
+#' \describe{
+#'   \item{CHR}{Chromosome for SNP (X coded numerical ly as 23)}
+#'   \item{POS}{Chromosomal position for each SNP, in base pairs}
+#'   \item{SNP}{Variant ID (such ws dbSNP ID "rs...". Note: Must be the same naming scheme as  used in the eQTL.df to ensure proper matching)}
+#'   \item{pvalue_GWAS}{pvalue for the SNP from GWAS analysis}
+#'   \item{beta_GWAS}{beta for SNP from GWAS analysis}
+#'   \item{Trait}{name of trait for which GWAS was run. This column must be present, with a value for every row, even if your GWAS.df contains data for only one trait.
+#'         (Note: GWAS.df can contain multiple traits (such as one might get from a PheWAS. Specifying the trait to be analyzed will filter only for GWAS entires for this trait)}
+#' }
+#'
+"GWAS.df.example"
