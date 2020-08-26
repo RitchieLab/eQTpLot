@@ -57,7 +57,7 @@ eQTpLot requires two data files, read into R as data frames and passed to the fu
     
 
 
-**Function arguments** 
+## Function arguments
 To run `eQTpLot`, a number of arguments must be specified. A number of optional arguments are available as well to customize and adjust the resultant plots.
 
 *Required Arguments*
@@ -89,12 +89,12 @@ The following arguments have default settings, which may be overridden to custom
 `saveplot` default is FALSE. If set to true, script will save the generated plot with the name `"gene.trait.tissue.eQTL.png"` using the supplied variables
 
 
-### Notes on analysis:
+## Notes on analysis:
 A PanTissue analysis can be specified, combining data across all tissue types for each variant. This is the default analysis, and can be overridden by specifying the tissue to use with the tissue argument.
 
 Not that, for all analyses, variants are divided into two groups – congruous (those with the same direction of effect on gene expression and the GWAS trait (e.g., both negative)) in blue, and incongruous (those with opposite directions of effect on gene expression and the GWAS trait (e.g., one negative, one positive)), in red. The division between congruous and incongruous variants provides a more nuanced view of the relationship between gene expression level and GWAS associations – a variant associated with increased expression of a candidate gene and increased risk for a given GWAS trait would seem to be operating through different mechanisms that a variant that is similarly associated with increased expression of the same candidate gene, but a decreased risk for the same GWAS trait. 
 
-### Examples:
+## Examples:
 Using the supplied example data frames GWAS.df.example and eQTL.df.example, we can generate a PanTissue eQTL analysis for the gene SPATA7 and the trait eGFR, using a GWAS significance threshold of 5e-8, and an eQTL significance threshold of 5e-4, as follows:
 
     eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = "SPATA7", trait = "eGFR", sigpvalue_GWAS = 5e-8, sigpvalue_eQTL = 5e-4)
