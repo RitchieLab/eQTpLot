@@ -7,16 +7,18 @@ eQTpLot is an R package developed for the visualization of colocalization betwee
 ## Input files
 eQTpLot requires two data files, read into R as data frames and passed to the function as the arguments `GWAS.df` and `eQTL.df`. Optionally, a third data frame can be passed to the function as `Genes.df` (discussed more below). A description of the required data is contained here:
 
-**GWAS.df**
+#### GWAS.df
 
 `GWAS.df` takes as input a data frame of standard GWAS data that must contain the following 6 columns:
 
-  `CHR` Chromosome for SNP (X coded numerically as 23) 
-  `POS` Chromosomal position for each SNP, in base pairs
-  `SNP` Variant ID (such as dbSNP ID "rs...". Note: Must be the same naming scheme as used in `eQTL.df` to ensure proper matching)
-  `pvalue_GWAS` p-value for the SNP from GWAS analysis
-  `beta_GWAS` beta for the SNP from GWAS analysis
-  `Trait` name of trait for which GWAS was run. This column must be present, with a value for every row, even if your `GWAS.df` contains data for only one trait. (Note: `GWAS.df` can contain multiple traits (such as one might obtain from a PheWAS. Specifying the trait to be analyzed will filter only for GWAS entries for this trait)
+  `CHR` Chromosome for SNP (X coded numerically as 23)  
+  `POS` Chromosomal position for each SNP, in base pairs  
+  `SNP` Variant ID (such as dbSNP ID "rs...". Note: Must be the same naming scheme as used in `eQTL.df` to ensure proper matching)  
+  `pvalue_GWAS` p-value for the SNP from GWAS analysis  
+  `beta_GWAS` beta for the SNP from GWAS analysis  
+  `Trait` name of trait for which GWAS was run. This column must be present, with a value for every row, even if your `GWAS.df` contains data for only one trait. 
+
+*Note:* `GWAS.df` can contain multiple traits (such as one might obtain from a PheWAS. Specifying the trait to be analyzed will filter only for GWAS entries for this trait
   
 **Example:**
     CHR	POS		SNP		beta_GWAS	pvalue_GWAS	Trait
@@ -25,7 +27,7 @@ eQTpLot requires two data files, read into R as data frames and passed to the fu
 
   
 
-**eQTL.df**
+#### eQTL.df
 `eQTL.df` takes as input a data frame of standard eQTL data (as might be downloaded from the GTEx Portal) that must contain the following 5 columns:
 
 `SNP` Variant ID (such as dbSNP ID "rs...". Note: Must be the same naming scheme as used in the `GWAS.df` to ensure proper matching)
