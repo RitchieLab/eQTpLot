@@ -122,7 +122,7 @@ Using the supplied example data frames GWAS.df.example and eQTL.df.example, we c
 
 Which generates the following plot:
 
-PLOT1
+![](man/figures/Plot1.jpeg)<!-- -->
 
 We can carry out the same analysis, confining out analysis to only kidney specific eQTLs as follows:
 
@@ -132,7 +132,7 @@ We can carry out the same analysis, confining out analysis to only kidney specif
 
 Which generates the following plot:
 
-PLOT2
+![](man/figures/Plot2.jpeg)<!-- -->
 
 Switching our analysis to a different gene, PTPN21, we can compare results between our SPATA7 analysis and PTPN21:
    
@@ -142,6 +142,6 @@ Switching our analysis to a different gene, PTPN21, we can compare results betwe
 
 Which generates the following plot:
 
-PLOT3
+![](man/figures/Plot3.jpeg)<!-- -->
 
 Multiple additional modifications to the plots can be specified, as noted above.
