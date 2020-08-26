@@ -13,12 +13,10 @@ eQTpLot requires two data files, read into R as data frames and passed to the fu
 
   `CHR` Chromosome for SNP (X coded numerically as 23)  
   `POS` Chromosomal position for each SNP, in base pairs  
-  `SNP` Variant ID (such as dbSNP ID "rs...". Note: Must be the same naming scheme as used in `eQTL.df` to ensure proper matching)  
+  `SNP` Variant ID (such as dbSNP ID "rs...". *Note: Must be the same naming scheme as used in `eQTL.df` to ensure proper matching)*  
   `pvalue_GWAS` p-value for the SNP from GWAS analysis  
   `beta_GWAS` beta for the SNP from GWAS analysis  
-  `Trait` name of trait for which GWAS was run. This column must be present, with a value for every row, even if your `GWAS.df` contains data for only one trait. 
-
-*Note:* `GWAS.df` can contain multiple traits (such as one might obtain from a PheWAS. Specifying the trait to be analyzed will filter only for GWAS entries for this trait
+  `Trait` name of trait for which GWAS was run. This column must be present, with a value for every row, even if your `GWAS.df` contains data for only one trait. *Note: `GWAS.df` can contain multiple traits (such as one might obtain from a PheWAS. Specifying the trait to be analyzed will filter only for GWAS entries for this trait*
   
 **Example:**
     CHR	POS		SNP		beta_GWAS	pvalue_GWAS	Trait
@@ -30,11 +28,11 @@ eQTpLot requires two data files, read into R as data frames and passed to the fu
 #### eQTL.df
 `eQTL.df` takes as input a data frame of standard eQTL data (as might be downloaded from the GTEx Portal) that must contain the following 5 columns:
 
-`SNP` Variant ID (such as dbSNP ID "rs...". Note: Must be the same naming scheme as used in the `GWAS.df` to ensure proper matching)
-`Gene` Gene symbol/name to which the eQTL expression data refers (Note: gene symbol/name must match entries in Genes.df to ensure proper matching)
-`pvalue_eQTL` p-value for the SNP from eQTL analysis (such as one might download from the GTEx Portal)
-`NES_eQTL` NES (normalized effect size) for the SNP from eQTL analysis (Per GTEx: defined as the slope of the linear regression, and is computed as the effect of the alternative allele (ALT) relative to the reference allele (REF) in the human genome reference (i.e., the eQTL effect allele is the ALT allele). NES are computed in a normalized space where magnitude has no direct biological interpretation.)
-`Tissue` tissue type in which the eQTL p-value/beta were obtained (Note: `eQTL.df` can contain multiple tissue types. Specifying the tissue type to be analyzed will filter only for eQTL entires for this tissue type. Alternatively, setting tissue type to "all" (or leaving out the tissue type argument) will automatically pick the smallest eQTL p-value for each SNP across all tissues for a PanTissue analysis)
+`SNP` Variant ID (such as dbSNP ID "rs...". *Note: Must be the same naming scheme as used in the `GWAS.df` to ensure proper matching)*  
+`Gene` Gene symbol/name to which the eQTL expression data refers *Note: gene symbol/name must match entries in Genes.df to ensure proper matching*  
+`pvalue_eQTL` p-value for the SNP from eQTL analysis (such as one might download from the GTEx Portal)  
+`NES_eQTL` NES (normalized effect size) for the SNP from eQTL analysis (Per GTEx: defined as the slope of the linear regression, and is computed as the effect of the alternative allele (ALT) relative to the reference allele (REF) in the human genome reference (i.e., the eQTL effect allele is the ALT allele). NES are computed in a normalized space where magnitude has no direct biological interpretation.)  
+`Tissue` tissue type in which the eQTL p-value/beta were obtained *Note: `eQTL.df` can contain multiple tissue types. Specifying the tissue type to be analyzed will filter only for eQTL entires for this tissue type. Alternatively, setting tissue type to "all" (or leaving out the tissue type argument) will automatically pick the smallest eQTL p-value for each SNP across all tissues for a PanTissue analysis*
   
 **Example:**
     Gene	SNP		pvalue_eQTL	NES_eQTL	Tissue
@@ -43,13 +41,13 @@ eQTpLot requires two data files, read into R as data frames and passed to the fu
 
 
 
-**Genes.df**
+#### Genes.df
 `Genes.df` takes an input a data frame of chromosomal locations for the genes to be analyzed, and, if supplied, must contain the following 5 columns. Note: eQTpLot automatically loads a default Genes.df dataframe containing information for thousands of genes (identified by gene symbol) in both genomic builds hg19 and hg38, but you may wish to specify our own Genes.df dataframe if your gene of interest is not included in the default dataframe, or if your eQTL data uses a different gene naming scheme (for example, Gencode ID instead of gene symbol)
 
-`Gene` Gene symbol/name for which the Coordinate data (below) refers to (Note: gene symbol/name must match entries in eQTL.df to ensure proper matching)
-`CHR` Chromosome the gene is on (X coded numerically as 23)
-`Start` Chromosomal coordinate of start position (in basepairs) to use for gene (Note: this should be the smaller of the two values between Start and Stop)
-`Stop` Chromosomal coordinate of end position (in basepairs) to use for gene (Note: this should be the larger of the two values between Start and Stop)
+`Gene` Gene symbol/name for which the Coordinate data (below) refers to *Note: gene symbol/name must match entries in eQTL.df to ensure proper matching)  
+`CHR` Chromosome the gene is on (X coded numerically as 23).  
+`Start` Chromosomal coordinate of start position (in basepairs) to use for gene *Note: this should be the smaller of the two values between Start and Stop*  
+`Stop` Chromosomal coordinate of end position (in basepairs) to use for gene *Note: this should be the larger of the two values between Start and Stop*  
 `Build` The genome build (either hg19 or hg38) for the location data -- the default `Genes.df` dataframe contains entries for both genome builds for each gene, and the script will select the appropriate entry based on the specified gbuild (default is hg19)).
 
 **Example:**
@@ -63,30 +61,31 @@ eQTpLot requires two data files, read into R as data frames and passed to the fu
 To run `eQTpLot`, a number of arguments must be specified. A number of optional arguments are available as well to customize and adjust the resultant plots.
 
 *Required Arguments*
-The following arguments must be specified to run eQTpLot:
-`GWAS.df` The name of GWAS.df, in quotes, defined as above
-`eQTL.df` The name of eQTL.df, in quotes, defined as above
-gene The name/symbol of gene to analyze, in quotes (must be present in both `Genes.df` and `eQTL.df`)
-`trait` The name of trait to analyze, in quotes (must be present in `GWAS.df`)
+The following arguments must be specified to run eQTpLot:   
+`GWAS.df` The name of GWAS.df, in quotes, defined as above  
+`eQTL.df` The name of eQTL.df, in quotes, defined as above  
+`gene` The name/symbol of gene to analyze, in quotes (must be present in both `Genes.df` and `eQTL.df`)  
+`trait` The name of trait to analyze, in quotes (must be present in `GWAS.df`)  
 `sigpvalue_GWAS` The GWAS p-value significance threshold to use (this value will be used for a horizontal line in plot A, and to define GWAS significant/non-significant SNPs for plot C)
 
 
 *Optional Arguments*
-The following arguments have default settings, which may be overridden to customize the resulting eQTpLot graphs:
-`Genes.df` The name of `Genes.df`, in quotes, defined as above. The default `Genes.df` contains chromosomal coordinates for most genes (identified by gene symbol) for both genome builds hg19 and hg38
-`sigpvalue_eQTL`  The eQTL p-value significance threshold to use (eQTL data with a p-value larger than this threshold will be excluded from the analysis). The default value is 0.05
-`tissue` The tissue, in quotes, from which to derive the eQTL information (the specified tissue must be present in `eQTL.df`). The default setting is "all" to run a Pan-Tissue analysis)
-`range` The range, in kB, to extend the analysis window on either side of the gene boundry of the gene of interest. The default value is 200 kb
-`gbuild` The genome build used for SNP cooridnates specified in GWAS.df, in quotes. This information will be used to obtain the appropriate gene coordinates from `Gene.df`, and will be used to fetch the genomic information for panel B. The default setting is `"hg19"` but can be changed to `"hg38"` if needed.
-`NESeQTLRange` the maximum and minimum limits (in the format c(0,2), for example (without quotes)) to display for the NES value in  `eQTL.df`. The default setting will adjust the size limits automatically for your data, whereas specifying the limits can keep them consistent between plots.
-`ylima` Used to manually adjust the y axis limit in plot A, if needed
-`ylimd` Used to manually adjust the y axis limit in plot D, if needed
-`xlimd` Used to manually adjust the x axis limit in plot D, if needed
-`genometrackheight` used to set the height of the genome track panel (B), with default setting of 1.5. Gene-dense regions may require more plotting space, whereas gene-poor regions may look better with less plotting space.
-`res` resolution of the output plot image (default is 300 dpi)
-`hgt` height of the output plot image (default is 12 inches)
-`wi` width of the output plot image (default is 14 inches)
-`getplot` default is TRUE. If set to false, script will not dsiplay the generated plot it in the viewer
+The following arguments have default settings, which may be overridden to customize the resulting eQTpLot graphs:  
+`Genes.df` The name of `Genes.df`, in quotes, defined as above. The default `Genes.df` contains chromosomal coordinates for most genes (identified by gene symbol) for both genome builds hg19 and hg38.  
+`sigpvalue_eQTL`  The eQTL p-value significance threshold to use (eQTL data with a p-value larger than this threshold will be excluded from the analysis). The default value is 0.05.  
+`tissue` The tissue, in quotes, from which to derive the eQTL information (the specified tissue must be present in `eQTL.df`). The default setting is "all" to run a Pan-Tissue analysis.  
+`range` The range, in kB, to extend the analysis window on either side of the gene boundry of the gene of interest. The default value is 200 kb.  
+`gbuild` The genome build used for SNP cooridnates specified in GWAS.df, in quotes. This information will be used to obtain the appropriate gene coordinates from.  
+`Gene.df`, and will be used to fetch the genomic information for panel B. The default setting is `"hg19"` but can be changed to `"hg38"` if needed.   
+`NESeQTLRange` the maximum and minimum limits (in the format c(0,2), for example (without quotes)) to display for the NES value in  `eQTL.df`. The default setting will adjust the size limits automatically for your data, whereas specifying the limits can keep them consistent between plots.   
+`ylima` Used to manually adjust the y axis limit in plot A, if needed.  
+`ylimd` Used to manually adjust the y axis limit in plot D, if needed.  
+`xlimd` Used to manually adjust the x axis limit in plot D, if needed.  
+`genometrackheight` used to set the height of the genome track panel (B), with default setting of 1.5. Gene-dense regions may require more plotting space, whereas gene-poor regions may look better with less plotting space   
+`res` resolution of the output plot image (default is 300 dpi)  
+`hgt` height of the output plot image (default is 12 inches)  
+`wi` width of the output plot image (default is 14 inches)  
+`getplot` default is TRUE. If set to false, script will not dsiplay the generated plot it in the viewer  
 `saveplot` default is FALSE. If set to true, script will save the generated plot with the name `"gene.trait.tissue.eQTL.png"` using the supplied variables
 
 
