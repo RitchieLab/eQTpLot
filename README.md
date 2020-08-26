@@ -4,6 +4,20 @@
 eQTpLot is an R package developed for the visualization of colocalization between eQTL and GWAS data. It requires a number of R packages (biomaRt , dplyr, GenomicRanges, ggnewscale, ggplot2, ggpubr, gridExtra, Gviz, patchwork) and takes as input two data frames (one of GWAS data, and the other of eQTL data), with the user specifying the name of the gene to be analyzed, the GWAS trait to be analyzed (useful if the GWAS data contains information on multiple associations, as one might obtain from a PheWAS), and the tissue type to use for the eQTL analysis (useful if eQTL data is available on multiple tissue types. A PanTissue analysis can be specified as well, combining data across tissue types for each variant). Additional parameters may be specified, including the p-value thresholds for GWAS or eQTL significance, the genomic range to be displayed, axis/layout modifications for the resultant graphs, etc. This data is then used to generate and output a series of plots visualizing colocalization, correlation, and enrichment between eQTL and GWAS signals for a given gene-trait pair.
 
 
+## Installation
+
+eQTpLot can be install using `devtools`, either directly from GitHub,
+
+`devtools::install_github(RitchieLab/eQTpLot)`
+
+or by downloading the repository to your computer, unzipping, and installing the `eQTpLot` folder.
+
+`devtools::install("eQTpLot")`
+
+*Note: For issues installing dependencies, try running the folling code prior to onstallation.
+
+`Sys.setenv(R_REMOTES_NO_ERRORS_FROM_WARNINGS=TRUE)`
+
 ## Input files
 eQTpLot requires two data files, read into R as data frames and passed to the function as the arguments `GWAS.df` and `eQTL.df`. Optionally, a third data frame can be passed to the function as `Genes.df` (discussed more below). A description of the required data is contained here:
 
@@ -97,7 +111,12 @@ Not that, for all analyses, variants are divided into two groups – congruous (
 ## Examples:
 Using the supplied example data frames GWAS.df.example and eQTL.df.example, we can generate a PanTissue eQTL analysis for the gene SPATA7 and the trait eGFR, using a GWAS significance threshold of 5e-8, and an eQTL significance threshold of 5e-4, as follows:
 
-    eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = "SPATA7", trait = "eGFR", sigpvalue_GWAS = 5e-8, sigpvalue_eQTL = 5e-4)
+    library(eQTpLot)
+    data(GWAS.df.example)
+    data(eQTL.df.example)
+    eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, 
+    gene = "SPATA7", trait = "eGFR", sigpvalue_GWAS = 5e-8, 
+    sigpvalue_eQTL = 5e-4)
 
 Which generates the following plot:
 
@@ -105,15 +124,19 @@ PLOT1
 
 We can carry out the same analysis, confining out analysis to only kidney specific eQTLs as follows:
 
-     eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = "SPATA7", trait = "eGFR", sigpvalue_GWAS = 5e-8, sigpvalue_eQTL = 5e-4, tissue = "Artery_Coronary")
+     eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, 
+     gene = "SPATA7", trait = "eGFR", sigpvalue_GWAS = 5e-8, 
+     sigpvalue_eQTL = 5e-4, tissue = "Artery_Coronary")
 
 Which generates the following plot:
 
 PLOT2
 
 Switching our analysis to a different gene, PTPN21, we can compare results between our SPATA7 analysis and PTPN21:
-
-    eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = "PTPN21", trait = "eGFR", sigpvalue_GWAS = 5e-8, sigpvalue_eQTL = 5e-4)
+   
+    eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, 
+    gene = "PTPN21", trait = "eGFR", sigpvalue_GWAS = 5e-8, 
+    sigpvalue_eQTL = 5e-4)
 
 Which generates the following plot:
 
