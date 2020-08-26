@@ -75,6 +75,7 @@ eQTpLot requires two data files, read into R as data frames and passed to the fu
 To run `eQTpLot`, a number of arguments must be specified. A number of optional arguments are available as well to customize and adjust the resultant plots.
 
 *Required Arguments*
+
 The following arguments must be specified to run eQTpLot:   
 `GWAS.df` The name of GWAS.df, in quotes, defined as above  
 `eQTL.df` The name of eQTL.df, in quotes, defined as above  
@@ -84,6 +85,7 @@ The following arguments must be specified to run eQTpLot:
 
 
 *Optional Arguments*
+
 The following arguments have default settings, which may be overridden to customize the resulting eQTpLot graphs:  
 `Genes.df` The name of `Genes.df`, in quotes, defined as above. The default `Genes.df` contains chromosomal coordinates for most genes (identified by gene symbol) for both genome builds hg19 and hg38.  
 `sigpvalue_eQTL`  The eQTL p-value significance threshold to use (eQTL data with a p-value larger than this threshold will be excluded from the analysis). The default value is 0.05.  
