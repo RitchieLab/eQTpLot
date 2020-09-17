@@ -24,4 +24,5 @@ Imports:
     biomaRt,
     ggpubr
 Depends: 
-    ggplot2 (>= 3.3.0)
+    ggplot2 (>= 3.3.0),
+    R (>= 2.10)
