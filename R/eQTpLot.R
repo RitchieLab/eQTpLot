@@ -36,25 +36,34 @@
 #' @param sigpvalue_eQTLeQTL pvalue significance threshold to use (eQTL data with a pvalue larger than this threshold will be excluded from the analysis)
 #' @param tissue tissue type, in quotes, for eQTL data to use (from eQTL.df, default setting is "all" for Pan-Tissue analysis)
 #' @param range range, in kB, to extend analysis window on either side of gene boundry. Default is 200 kb
+#' @param NESeQTLRange the maximum and minimum limits in the format c(min,max), to display for the NES value in eQTL.df.
+#'          The default setting will adjust the size limits automatically for your data, whereas specifying the limits
+#'          can keep them consistent between plots.
 #' @param ylima used to manually adjust the y axis limit in plot A, if needed
 #' @param ylimd used to manually adjust the y axis limit in plot D, if needed
 #' @param xlimd used to manually adjust the x axis limit in plot D, if needed
-#' @param genometrackheight used to set the height of the genome track panel (B), with default setting of 1.5. Gene-dense regions may require more plotting space, whereas gene-poor regions may look better with less plotting space.
-#' @param gbuild the genome build to use, in quotes, for fetching genomic information for panel B. Default is "hg19" but can specify "hg38" if needed. This build should match the genome build used for "CHR" and "POS" in the GWAS.df
+#' @param genometrackheight used to set the height of the genome track panel (B), with default setting of 1.5.
+#'           Gene-dense regions may require more plotting space, whereas gene-poor regions may look better with less plotting space.
+#' @param gbuild the genome build to use, in quotes, for fetching genomic information for panel B.
+#'            Default is "hg19" but can specify "hg38" if needed. This build should match the genome build used for "CHR" and "POS" in the GWAS.df
 #' @param res resolution of the output plot image (default is 300 dpi)
 #' @param hgt height of the output plot image (default is 12 inches)
 #' @param wi width of the output plot image (default is 14 inches)
 #' @param getplot default is TRUE. If set to false, script will not dsiplay the generated plot in the viewer
-#' @param saveplot default is TRUE, script will save the generated plot in the working diretory with the name "gene.trait.tissue.eQTL.png" using the supplied variables
+#' @param saveplot default is TRUE, script will save the generated plot in the working diretory with the name
+#'            "gene.trait.tissue.eQTL.png" using the supplied variables
 #' @importFrom magrittr "%>%"
 #' @export
 #' @examples
-#' eQTpLot(Genes.df = Genes.df.example, GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = "SPATA7", trait = "eGFR")
+#' Saves to current directory
+#' eQTpLot(Genes.df = Genes.df.example, GWAS.df = GWAS.df.example,
+#'         eQTL.df = eQTL.df.example, gene = "SPATA7", trait = "eGFR",
+#'         getplot=FALSE)
 #' eQTpLot()
 
 eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, gene, trait,
                     sigpvalue_GWAS = 5e-8, sigpvalue_eQTL = 0.05,
-                    tissue = "all", range = 200,
+                    tissue = "all", range = 200, NESeQTLRange = c(NA,NA),
                     ylima = NA, ylimd = NA, xlimd = NA,
                     genometrackheight = 1.5, gbuild = "hg19",
                     res = 300, hgt = 18, wi = 18,
@@ -73,26 +82,45 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, gene, trait,
   ### Check Data
   print("Checking input data...")
 
-  if(missing(Genes.df)){Genes.df <- eQTpLot::genes}
+  if(missing(Genes.df)){Genes.df <- eQTpLot:::genes}
 
-  if(("CHR" %in% colnames(GWAS.df)) == FALSE |("POS" %in% colnames(GWAS.df)) == FALSE | ("SNP" %in% colnames(GWAS.df)) == FALSE | ("beta_GWAS" %in% colnames(GWAS.df)) == FALSE | ("pvalue_GWAS" %in% colnames(GWAS.df)) == FALSE | ("Trait" %in% colnames(GWAS.df)) == FALSE) stop('The data supplied to GWAS.df must contain columns "CHR", "POS", "SNP", "beta_GWAS", "pvalue_GWAS", and "Trait"')
+  if(all(c("CHR", "POS", "SNP", "beta_GWAS", "pvalue_GWAS","Trait") %in% colnames(GWAS.df))==FALSE) {
+    stop("The data supplied to GWAS.df must contain columns 'CHR', 'POS', 'SNP', 'beta_GWAS', 'pvalue_GWAS', and 'Trait'")
+  }
 
-  if(("SNP" %in% colnames(eQTL.df)) == FALSE |("Gene" %in% colnames(eQTL.df)) == FALSE | ("Tissue" %in% colnames(eQTL.df)) == FALSE | ("NES_eQTL" %in% colnames(eQTL.df)) == FALSE | ("pvalue_eQTL" %in% colnames(eQTL.df)) == FALSE | ("Trait" %in% colnames(GWAS.df)) == FALSE) stop('The data supplied to eQTL.df must contain columns "SNP", "Gene", "pvalue_eQTL", "NES_eQTL", and "Tissue"')
+  if(all(c("SNP", "Gene", "pvalue_eQTL", "NES_eQTL", "Tissue") %in% colnames(eQTL.df))==FALSE) {
+    stop("The data supplied to eQTL.df must contain columns 'SNP', 'Gene', 'pvalue_eQTL', 'NES_eQTL', and 'Tissue'")
+  }
 
-  if(("Gene" %in% colnames(Genes.df)) == FALSE |("CHR" %in% colnames(Genes.df)) == FALSE | ("Start" %in% colnames(Genes.df)) == FALSE | ("Stop" %in% colnames(Genes.df)) == FALSE | ("Build" %in% colnames(Genes.df)) == FALSE) stop('The data supplied to Genes.df must contain columns "Gene", "CHR", "Start", "Stop", and "Build"')
+  if(all(c("Gene", "CHR", "Start", "Stop", "Build") %in% colnames(Genes.df))==FALSE) {
+    stop("The data supplied to Genes.df must contain columns 'Gene', 'CHR', 'Start', 'Stop', 'Build'")
+  }
 
-  if(is.numeric(eQTL.df$pvalue_eQTL) == FALSE | is.numeric(eQTL.df$NES_eQTL) == FALSE) stop('Sorry, the eQTL.df dataframe must contain only numeric data for pvalue_eQTL and NES_eQTL')
 
-  if(is.numeric(GWAS.df$pvalue_GWAS) == FALSE | is.numeric(GWAS.df$beta_GWAS) == FALSE | is.integer(GWAS.df$POS) == FALSE | is.integer(GWAS.df$CHR) == FALSE) stop('Sorry, the GWAS.df dataframe must contain only numeric data for CHR, POS, pvalue_GWAS, and beta_GWAS (Note: chromosomes must be coded numerically)')
+  if(is.numeric(eQTL.df$pvalue_eQTL) == FALSE | is.numeric(eQTL.df$NES_eQTL) == FALSE) {
+    stop('Sorry, the eQTL.df dataframe must contain only numeric data for pvalue_eQTL and NES_eQTL')
+  }
 
-  if(is.integer(Genes.df$CHR) == FALSE | is.integer(Genes.df$Start) == FALSE | is.integer(Genes.df$Stop) == FALSE) stop('Sorry, the Genes.df dataframe must contain only integer values for CHR, Start, and Stop (Note: chromosomes must be coded nuemrically)')
+  if(is.numeric(GWAS.df$pvalue_GWAS) == FALSE | is.numeric(GWAS.df$beta_GWAS) == FALSE | is.integer(GWAS.df$POS) == FALSE | is.integer(GWAS.df$CHR) == FALSE) {
+    stop('Sorry, the GWAS.df dataframe must contain only numeric data for CHR, POS, pvalue_GWAS, and beta_GWAS (Note: chromosomes must be coded numerically)')
+  }
 
-  if(dim(Genes.df[which(Genes.df$Gene == gene & Genes.df$Build == gbuild), ])[1] == 0) stop('Sorry, there is no information for the gene ', paste(gene), ' in the Genes.df dataframe for the genomic build ', paste(gbuild))
+  if(is.integer(Genes.df$CHR) == FALSE | is.integer(Genes.df$Start) == FALSE | is.integer(Genes.df$Stop) == FALSE) {
+    stop('Sorry, the Genes.df dataframe must contain only integer values for CHR, Start, and Stop (Note: chromosomes must be coded nuemrically)')
+  }
 
-  if((tissue %in% eQTL.df$Tissue) == FALSE & (tissue == "all") == FALSE) stop('Sorry, the tissue ', paste(tissue), ' does not exist in the eQTL.df dataframe. Tissues included in the data supplied to eQTL.df are:\n', paste("'",as.character(unique(eQTL.df$Tissue)),"'",collapse=", ",sep=""))
+  if(dim(Genes.df[which(Genes.df$Gene == gene & Genes.df$Build == gbuild), ])[1] == 0) {
+    stop('Sorry, there is no information for the gene ', paste(gene), ' in the Genes.df dataframe for the genomic build ', paste(gbuild))
+  }
 
-  if((trait %in% GWAS.df$Trait) == FALSE) stop('Sorry, the  trait ', paste(trait), ' does not exist in the GWAS.df dataframe. Traits included in the data supplied to GWAS.df are:\n', paste("'",as.character(unique(GWAS.df$Trait)),"'",collapse=", ",sep=""))
-
+  if((tissue %in% eQTL.df$Tissue) == FALSE & (tissue == "all") == FALSE){
+    stop('Sorry, the tissue ', paste(tissue), ' does not exist in the eQTL.df dataframe. Tissues included in the data supplied to eQTL.df are:\n',
+         paste("'",as.character(unique(eQTL.df$Tissue)),"'",collapse=", ",sep=""))
+  }
+  if((trait %in% GWAS.df$Trait) == FALSE) {
+    stop('Sorry, the  trait ', paste(trait), ' does not exist in the GWAS.df dataframe. Traits included in the data supplied to GWAS.df are:\n',
+         paste("'",as.character(unique(GWAS.df$Trait)),"'",collapse=", ",sep=""))
+  }
 
   ########################
   ### Compile Data
@@ -130,8 +158,11 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, gene, trait,
   gwas.data$SNP <- as.factor(gwas.data$SNP)
   eqtl.data$SNP <- as.factor(eqtl.data$SNP)
   combinedSNPS <- sort(union(levels(gwas.data$SNP), levels(eqtl.data$SNP)))
-  Combined.eQTL.GWAS.Data <- dplyr::left_join(dplyr::mutate(gwas.data, SNP=factor(SNP, levels=combinedSNPS)), dplyr::mutate(eqtl.data, SNP=factor(SNP, levels=combinedSNPS)))
-  if(dim(Combined.eQTL.GWAS.Data)[1] == 0) stop('Sorry, for the gene ', paste(gene), ' and the trait ', paste(trait), ' there is no overlap between the SNPs in your GWAS.df and eQTL.df')
+  Combined.eQTL.GWAS.Data <- dplyr::left_join(dplyr::mutate(gwas.data, SNP=factor(SNP, levels=combinedSNPS)),
+                                              dplyr::mutate(eqtl.data, SNP=factor(SNP, levels=combinedSNPS)))
+  if(dim(Combined.eQTL.GWAS.Data)[1] == 0) {
+    stop('Sorry, for the gene ', paste(gene), ' and the trait ', paste(trait), ' there is no overlap between the SNPs in your GWAS.df and eQTL.df')
+  }
 
   ### Determine directions of effect and congruence
   Combined.eQTL.GWAS.Data$DirectionOfEffect_GWAS <- ifelse(Combined.eQTL.GWAS.Data$beta_GWAS < 0, "Negative", ifelse(Combined.eQTL.GWAS.Data$beta_GWAS > 0, "Positive", NA))
@@ -167,17 +198,23 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, gene, trait,
   p1 <-
     ggplot2::ggplot (data=Combined.eQTL.GWAS.Data, aes(stroke = 0)) +
       ggplot2::coord_cartesian(xlim = c(minpos, maxpos), expand = FALSE) +
-      ggplot2::geom_point(data = subset(Combined.eQTL.GWAS.Data, Congruence == "Non-eQTL"), shape = 15, color = "black", alpha = 0.2, aes(x=POS, y=Neglog10pvalue_GWAS)) +
+      ggplot2::geom_point(data = subset(Combined.eQTL.GWAS.Data, Congruence == "Non-eQTL"), shape = 15, color = "black", alpha = 0.2,
+                          aes(x=POS, y=Neglog10pvalue_GWAS)) +
       ggplot2::xlab("") +
       ggplot2::ylab(paste("-log10(GWAS p-value)  association with ", trait)) +
       ggplot2::scale_y_continuous(limits=c(NA,ylima)) +
       ggplot2::ggtitle(paste("Association study of ", trait, ", variants colored by eQTL data for ", gene,
-                             " (GWAS significance threshold ", sigpvalue_GWAS, ", eQTL significance threshold ", sigpvalue_eQTL, ")", sep = "")) +
+                             " (GWAS significance threshold ", sigpvalue_GWAS, ", eQTL significance threshold ",
+                             sigpvalue_eQTL, ")", sep = "")) +
       ggplot2::scale_shape_manual("GWAS Direction of Effect", values=c("Negative" = 25, "Positive" = 24), na.value = 22) +
-      ggplot2::guides(alpha = FALSE, size = guide_legend("eQTL Normalized Effect Size",
-                                                         override.aes = list(shape = 24, color = "black", fill ="grey"),
-                                                         title.position = "top", order = 2),
-                                                         shape = guide_legend(title.position = "top", order = 1, override.aes = list(size= 3, fill = "grey"))) +
+      ggplot2::guides(alpha = FALSE,
+                      size = guide_legend("eQTL Normalized Effect Size",
+                                          override.aes = list(shape = 24, color = "black", fill ="grey"),
+                                          title.position = "top", order = 2),
+                                          shape = guide_legend(title.position = "top",
+                                                               order = 1,
+                                                               override.aes = list(size= 3,
+                                                                                   fill = "grey"))) +
       ggplot2::theme(legend.direction = "horizontal", legend.key = element_rect(fill = NA, colour = NA, size = 0.25)) +
       ggplot2::geom_hline(yintercept=-log10(sigpvalue_GWAS), linetype="solid", color = "red", size=0.5) +
       ggplot2::theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank()) +
@@ -187,29 +224,52 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, gene, trait,
     p1 <- p1 + ggplot2::geom_point(data = subset(Combined.eQTL.GWAS.Data, Congruence == "Congruent"),
                           alpha = 1,
                           aes(x=POS, y=Neglog10pvalue_GWAS, fill=NeglogeQTLpValue, alpha = 1, shape = DirectionOfEffect_GWAS, size = abs(NES_eQTL)))+
-                          ggplot2::scale_fill_gradient("-log10(eQTL p-value), SNPs with\nCongruous directions of effect", low="#000099", high="#33FFFF",
+                          ggplot2::scale_fill_gradient("-log10(eQTL p-value), SNPs with\nCongruous directions of effect",
+                                                       low="#000099", high="#33FFFF",
                                                        guide = guide_colorbar(title.position = "top"),
                                                        limits=c(min(Combined.eQTL.GWAS.Data %>%
-                                                                      dplyr::select (NeglogeQTLpValue), na.rm = TRUE),max(Combined.eQTL.GWAS.Data %>%
-                                                                                                                            dplyr::select (NeglogeQTLpValue), na.rm = TRUE)))}
+                                                                      dplyr::select (NeglogeQTLpValue), na.rm = TRUE), max(Combined.eQTL.GWAS.Data %>%
+                                                                                                                             dplyr::select (NeglogeQTLpValue), na.rm = TRUE)))
+    }
 
   if(Congruentdata == FALSE & Incongruentdata == TRUE){
-    p1 <- p1+ geom_point(data = subset(Combined.eQTL.GWAS.Data, Congruence == "Incongruent"),
+    p1 <- p1 + ggplot2::geom_point(data = subset(Combined.eQTL.GWAS.Data, Congruence == "Incongruent"),
                          alpha = 1,
-                         aes(x=POS, y=Neglog10pvalue_GWAS, fill=NeglogeQTLpValue, alpha = 1, shape = DirectionOfEffect_GWAS, size = abs(NES_eQTL))) +
-      scale_fill_gradient("-log10(eQTL p-value), SNPS with\nIncongruous directions of effect", low="#990000", high="#FFCC33", guide = guide_colorbar(title.position = "top"), limits=c(min(Combined.eQTL.GWAS.Data %>% dplyr::select (NeglogeQTLpValue), na.rm = TRUE),max(Combined.eQTL.GWAS.Data %>% dplyr::select (NeglogeQTLpValue), na.rm = TRUE)))}
+                         aes(x=POS, y=Neglog10pvalue_GWAS, fill=NeglogeQTLpValue, alpha = 1,
+                             shape = DirectionOfEffect_GWAS, size = abs(NES_eQTL))) +
+                ggplot2::scale_fill_gradient("-log10(eQTL p-value), SNPS with\nIncongruous directions of effect",
+                                             low="#990000", high="#FFCC33",
+                                             guide = guide_colorbar(title.position = "top"),
+                                             limits=c(min(Combined.eQTL.GWAS.Data %>%
+                                                            dplyr::select (NeglogeQTLpValue), na.rm = TRUE),max(Combined.eQTL.GWAS.Data %>%
+                                                                                                                  dplyr::select (NeglogeQTLpValue), na.rm = TRUE)))
+    }
 
   if(Congruentdata == TRUE & Incongruentdata == TRUE){
-    p1 <- p1 + geom_point(data = subset(Combined.eQTL.GWAS.Data, Congruence == "Congruent"),
+    p1 <- p1 + ggplot2::geom_point(data = subset(Combined.eQTL.GWAS.Data, Congruence == "Congruent"),
                           alpha = 1,
-                          aes(x=POS, y=Neglog10pvalue_GWAS, fill=NeglogeQTLpValue, alpha = 1, shape = DirectionOfEffect_GWAS, size = abs(NES_eQTL)))+
-      scale_fill_gradient("-log10(eQTL p-value), SNPs with\nCongruous directions of effect", low="#000099", high="#33FFFF", guide = guide_colorbar(title.position = "top"), limits=c(min(Combined.eQTL.GWAS.Data %>% dplyr::select (NeglogeQTLpValue), na.rm = TRUE),max(Combined.eQTL.GWAS.Data %>% dplyr::select (NeglogeQTLpValue), na.rm = TRUE))) +
-      ggnewscale::new_scale_fill() +
-      geom_point(data = subset(Combined.eQTL.GWAS.Data, Congruence == "Incongruent"),
+                          aes(x=POS, y=Neglog10pvalue_GWAS, fill=NeglogeQTLpValue, alpha = 1,
+                              shape = DirectionOfEffect_GWAS, size = abs(NES_eQTL))) +
+               ggplot2::scale_fill_gradient("-log10(eQTL p-value), SNPs with\nCongruous directions of effect",
+                                            low="#000099", high="#33FFFF",
+                                            guide = guide_colorbar(title.position = "top"),
+                                            limits=c(min(Combined.eQTL.GWAS.Data %>%
+                                                           dplyr::select (NeglogeQTLpValue), na.rm = TRUE),max(Combined.eQTL.GWAS.Data %>%
+                                                                                                                 dplyr::select (NeglogeQTLpValue), na.rm = TRUE))) +
+               ggnewscale::new_scale_fill() +
+               ggplot2::geom_point(data = subset(Combined.eQTL.GWAS.Data, Congruence == "Incongruent"),
                  alpha = 1,
-                 aes(x=POS, y=Neglog10pvalue_GWAS, fill=NeglogeQTLpValue, alpha = 1, shape = DirectionOfEffect_GWAS, size = abs(NES_eQTL))) +
-      scale_fill_gradient("-log10(eQTL p-value), SNPS with\nIncongruous directions of effect", low="#990000", high="#FFCC33", guide = guide_colorbar(title.position = "top"), limits=c(min(Combined.eQTL.GWAS.Data %>% dplyr::select (NeglogeQTLpValue), na.rm = TRUE),max(Combined.eQTL.GWAS.Data %>% dplyr::select (NeglogeQTLpValue), na.rm = TRUE)))}
+                 aes(x=POS, y=Neglog10pvalue_GWAS, fill=NeglogeQTLpValue, alpha = 1,
+                     shape = DirectionOfEffect_GWAS, size = abs(NES_eQTL))) +
+               ggplot2::scale_fill_gradient("-log10(eQTL p-value), SNPS with\nIncongruous directions of effect",
+                                            low="#990000", high="#FFCC33",
+                                            guide = guide_colorbar(title.position = "top"),
+                                            limits=c(min(Combined.eQTL.GWAS.Data %>%
+                                                           dplyr::select (NeglogeQTLpValue), na.rm = TRUE),max(Combined.eQTL.GWAS.Data %>%
+                                                                                                                 dplyr::select (NeglogeQTLpValue), na.rm = TRUE)))
+    }
 
+  p1 <- p1 + scale_size_continuous(limits = NESeQTLRange)
 
   ########################
   ### Generate Gene Tracks
@@ -258,8 +318,11 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, gene, trait,
   ###Fisher's exact test of eQTL enrichment
   Combined.eQTL.GWAS.Data$iseQTL <- Combined.eQTL.GWAS.Data$Congruence
   Combined.eQTL.GWAS.Data$iseQTL <- ifelse(Combined.eQTL.GWAS.Data$iseQTL=="Non-eQTL", "Non-eQTL", "eQTL")
-  if(nrow(as.table(table(Combined.eQTL.GWAS.Data$iseQTL, Combined.eQTL.GWAS.Data$significance))) < 2 | ncol(as.table(table(Combined.eQTL.GWAS.Data$iseQTL, Combined.eQTL.GWAS.Data$significance))) < 2){NoFisher <- TRUE; print ("Not enough data to compute enrichment significance for Plot C")}
-  if(NoFisher==FALSE){fisher <- fisher.test(table(Combined.eQTL.GWAS.Data$iseQTL, Combined.eQTL.GWAS.Data$significance))}
+  if(nrow(as.table(table(Combined.eQTL.GWAS.Data$iseQTL, Combined.eQTL.GWAS.Data$significance))) < 2 | ncol(as.table(table(Combined.eQTL.GWAS.Data$iseQTL, Combined.eQTL.GWAS.Data$significance))) < 2){
+    NoFisher <- TRUE; print ("Not enough data to compute enrichment significance for Plot C")
+    }
+  if(NoFisher==FALSE){fisher <- fisher.test(table(Combined.eQTL.GWAS.Data$iseQTL,
+                                                  Combined.eQTL.GWAS.Data$significance))}
   if(NoFisher==FALSE){fpvalue <- fisher$p.value}
 
   ### Generate plot 2
@@ -293,21 +356,6 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, gene, trait,
   print("Generating Plot D...")
 
   ### Regression Line Equation Function
-  #lm_eq <- function(df){
-
-  #  m <- lm(y ~ x, df);
-
-  #  eq <- substitute(y == a + b %.% x*","~~r^2~"="~r2,
-
-  #                  list(a = format(unname(coef(m)[1]), digits = 2),
-
-  #                       b = format(unname(coef(m)[2]), digits = 2),
-
-  #                       r2 = format(summary(m)$r.squared, digits = 3)))
-
-  #  as.character(as.expression(eq));
-  #}
-
   lm_eq <- function(df){
 
     m <- lm(NeglogeQTLpValue ~ Neglog10pvalue_GWAS, df);
@@ -323,49 +371,63 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, gene, trait,
     as.character(as.expression(eq));
   }
 
-
-
   ### Generate plot 3
-  p3 <-
-    ggplot2::ggplot(data=Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL)) , ]) +
-      ggplot2::ggtitle(paste("P-P plot, associaton of GWAS p-value with eQTL p-value")) +
-      ggplot2::guides(color = guide_legend("Direction of Effect")) +
-      ggplot2::xlab("\n-log10(eQTL p-value)") +
-      ggplot2::ylab(paste("-log10(GWAS p-value)\n")) +
-      ggplot2::scale_y_continuous(limits=c(NA,ylimd))+
-      ggplot2::scale_x_continuous(limits=c(NA,xlimd))+
-      ggplot2::theme(legend.position = "right")
+  p3 <- ggplot2::ggplot(data=Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL)) , ]) +
+          ggplot2::ggtitle(paste("P-P plot, associaton of GWAS p-value with eQTL p-value")) +
+          ggplot2::guides(color = guide_legend("Direction of Effect")) +
+          ggplot2::xlab("\n-log10(eQTL p-value)") +
+          ggplot2::ylab(paste("-log10(GWAS p-value)\n")) +
+          ggplot2::scale_y_continuous(limits=c(NA,ylimd))+
+          ggplot2::scale_x_continuous(limits=c(NA,xlimd))+
+          ggplot2::theme(legend.position = "right")
 
-  if(Congruentdata == TRUE & nrow(Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Congruent") , ]) >=2){
-    pearson.congruent <- cor.test(Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Congruent") , ]$NeglogeQTLpValue, Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Congruent") , ]$Neglog10pvalue_GWAS, method = "pearson");
+  if(Congruentdata == TRUE & nrow(Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Congruent") , ]) >=2) {
+    pearson.congruent <- cor.test(Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Congruent") , ]$NeglogeQTLpValue,
+                                  Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Congruent") , ]$Neglog10pvalue_GWAS,
+                                  method = "pearson")
     p3 <- p3 + ggplot2::geom_point(data=Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Congruent") , ],
-                                   aes(y=Neglog10pvalue_GWAS, x=NeglogeQTLpValue, color=Congruence))  +
+                                   aes(y=Neglog10pvalue_GWAS, x=NeglogeQTLpValue, color=Congruence)) +
                ggplot2::geom_smooth(data=Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Congruent") , ],
-                                   aes(y=Neglog10pvalue_GWAS, x=NeglogeQTLpValue, color=Congruence), method = "lm", formula = (y ~ x)) +
+                                    aes(y=Neglog10pvalue_GWAS, x=NeglogeQTLpValue, color=Congruence), method = "lm", formula = (y ~ x)) +
                ggplot2::geom_text(x= -Inf, y= Inf,
                                   label = lm_eq(Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Congruent") , ]),
                                   parse = TRUE, color="#000099", hjust =-0.05, vjust= 1.2, family = "mono") +
                ggplot2::geom_text(x= -Inf, y= Inf,
-                                  label = paste(sep = "", "Pearson correlation: ", round(pearson.congruent$estimate, 3), ", p-value: ", formatC(pearson.congruent$p.value, format = "e", digits = 2)),
-                                  color="#000099", hjust =-0.1, vjust= 3.8, family = "mono")} else {print("Not enough data to generate Plot D for Congruent eQTLs")
+                                  label = paste(sep = "", "Pearson correlation: ",
+                                                round(pearson.congruent$estimate, 3),
+                                                ", p-value: ",
+                                                formatC(pearson.congruent$p.value,
+                                                        format = "e",
+                                                        digits = 2)),
+                                  color="#000099", hjust =-0.1, vjust= 3.8, family = "mono")
+  } else {
+      print("Not enough data to generate Plot D for Congruent eQTLs")
   }
 
-  if(Incongruentdata == TRUE & nrow(Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Incongruent") , ]) >=2){
-    pearson.incongruent <- cor.test(Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Incongruent") , ]$NeglogeQTLpValue, Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Incongruent") , ]$Neglog10pvalue_GWAS, method = "pearson");
+
+  if(Incongruentdata == TRUE & nrow(Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Incongruent") , ]) >=2) {
+    pearson.incongruent <- cor.test(Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Incongruent") , ]$NeglogeQTLpValue,
+                                  Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Incongruent") , ]$Neglog10pvalue_GWAS,
+                                  method = "pearson")
     p3 <- p3 + ggplot2::geom_point(data=Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Incongruent") , ],
-                                   aes(y=Neglog10pvalue_GWAS, x=NeglogeQTLpValue, color=Congruence)) +
+                         aes(y=Neglog10pvalue_GWAS, x=NeglogeQTLpValue, color=Congruence)) +
                ggplot2::geom_smooth(data=Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Incongruent") , ],
-                                    aes(y=Neglog10pvalue_GWAS, x=NeglogeQTLpValue, color=Congruence), method = "lm", formula = (y ~ x)) +
+                                    aes(y=Neglog10pvalue_GWAS, x=NeglogeQTLpValue, color=Congruence),
+                                    method = "lm", formula = (y ~ x)) +
                ggplot2::geom_text(x= -Inf, y= Inf,
                                   label = lm_eq(Combined.eQTL.GWAS.Data[ which( !is.na(Combined.eQTL.GWAS.Data$NES_eQTL) & Combined.eQTL.GWAS.Data$Congruence == "Incongruent") , ]),
                                   parse = TRUE, color="#990000", hjust =-0.05, vjust= 4.0, family = "mono") +
-               ggplot2::geom_text(x= -Inf, y= Inf,
-                                  label = paste(sep = "", "Pearson correlation: ", round(pearson.incongruent$estimate, 3), ", p-value: ", formatC(pearson.incongruent$p.value, format = "e", digits = 2)),
-                                  color="#990000", hjust =-0.1, vjust= 8.5, family = "mono")} else {print("Not enough data to generate Plot D for Incongruent eQTLs")
+                ggplot2::geom_text(x= -Inf, y= Inf,
+                                   label = paste(sep = "", "Pearson correlation: ",
+                                                 round(pearson.incongruent$estimate, 3),
+                                                 ", p-value: ",
+                                                 formatC(pearson.incongruent$p.value, format = "e", digits = 2)),
+                                                         color="#990000", hjust =-0.1, vjust= 8.5, family = "mono")
+  } else {
+     print("Not enough data to generate Plot D for Incongruent eQTLs")
   }
 
-
-  if(Congruentdata == TRUE & Incongruentdata == TRUE){p3 <- p3 + scale_color_manual(values = c("Congruent" = "#000099", "Incongruent" = "#990000"))}
+  if(Congruentdata == TRUE & Incongruentdata == TRUE){p3 <- p3 + scale_color_manual(values = c("Congruent" = "#000099", "Incongruent" = "#990000")    )}
 
   if(Congruentdata == TRUE & Incongruentdata == FALSE){p3 <- p3 + scale_color_manual(values = c("Congruent" = "#000099"))}
 

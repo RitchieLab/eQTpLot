@@ -14,6 +14,7 @@ eQTpLot(
   sigpvalue_eQTL = 0.05,
   tissue = "all",
   range = 200,
+  NESeQTLRange = c(NA, NA),
   ylima = NA,
   ylimd = NA,
   xlimd = NA,
@@ -69,15 +70,21 @@ the default Genes.df dataframe contains entries for both genome builds for each 
 
 \item{range}{range, in kB, to extend analysis window on either side of gene boundry. Default is 200 kb}
 
+\item{NESeQTLRange}{the maximum and minimum limits in the format c(min,max), to display for the NES value in eQTL.df.
+The default setting will adjust the size limits automatically for your data, whereas specifying the limits
+can keep them consistent between plots.}
+
 \item{ylima}{used to manually adjust the y axis limit in plot A, if needed}
 
 \item{ylimd}{used to manually adjust the y axis limit in plot D, if needed}
 
 \item{xlimd}{used to manually adjust the x axis limit in plot D, if needed}
 
-\item{genometrackheight}{used to set the height of the genome track panel (B), with default setting of 1.5. Gene-dense regions may require more plotting space, whereas gene-poor regions may look better with less plotting space.}
+\item{genometrackheight}{used to set the height of the genome track panel (B), with default setting of 1.5.
+Gene-dense regions may require more plotting space, whereas gene-poor regions may look better with less plotting space.}
 
-\item{gbuild}{the genome build to use, in quotes, for fetching genomic information for panel B. Default is "hg19" but can specify "hg38" if needed. This build should match the genome build used for "CHR" and "POS" in the GWAS.df}
+\item{gbuild}{the genome build to use, in quotes, for fetching genomic information for panel B.
+Default is "hg19" but can specify "hg38" if needed. This build should match the genome build used for "CHR" and "POS" in the GWAS.df}
 
 \item{res}{resolution of the output plot image (default is 300 dpi)}
 
@@ -87,7 +94,8 @@ the default Genes.df dataframe contains entries for both genome builds for each 
 
 \item{getplot}{default is TRUE. If set to false, script will not dsiplay the generated plot in the viewer}
 
-\item{saveplot}{default is TRUE, script will save the generated plot in the working diretory with the name "gene.trait.tissue.eQTL.png" using the supplied variables}
+\item{saveplot}{default is TRUE, script will save the generated plot in the working diretory with the name
+"gene.trait.tissue.eQTL.png" using the supplied variables}
 
 \item{sigpvalue_eQTLeQTL}{pvalue significance threshold to use (eQTL data with a pvalue larger than this threshold will be excluded from the analysis)}
 }
@@ -95,6 +103,9 @@ the default Genes.df dataframe contains entries for both genome builds for each 
 This function creates an eQTpLot composite
 }
 \examples{
-eQTpLot(Genes.df = Genes.df.example, GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = "SPATA7", trait = "eGFR")
+Saves to current directory
+eQTpLot(Genes.df = Genes.df.example, GWAS.df = GWAS.df.example,
+        eQTL.df = eQTL.df.example, gene = "SPATA7", trait = "eGFR",
+        getplot=FALSE)
 eQTpLot()
 }
