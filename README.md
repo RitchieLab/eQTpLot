@@ -8,7 +8,7 @@ eQTpLot is an R package developed for the visualization of colocalization betwee
 
 eQTpLot can be install using `devtools`, either directly from GitHub,
 
-`devtools::install_github(RitchieLab/eQTpLot)`
+`devtools::install_github("RitchieLab/eQTpLot")`
 
 or by downloading the repository to your computer, unzipping, and installing the `eQTpLot` folder.
 
