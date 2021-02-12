@@ -1,0 +1,20 @@
+#' LD data
+#'
+#' A dataset containing LD data
+#' 
+#' @docType data
+#'
+#' @usage data(LD.df.example)
+#'
+#' @format Dataframe of SNP linkage data, one row per SNP pair, with 5 columns (PLINK --r2 output format)
+#' \describe {
+#'  \item{BP_A}{Base pair position of the first variant in the LD pair. Data type: integer}
+#'  \item{SNP_A}{Variant ID of the first variant in the LD pair. Data type: character
+#'        Note: only variants that also appear in the GWAS.df SNP column will be used for LD analysis.}
+#'  \item{BP_B}{Base pair position of the second variant in the LD pair. Data type:integer}
+#'  \item{SNP_B}{Variant ID of the second variant in the LD pair. Data type: character
+#'               Note: only SNPs that also appear in the GWAS.df SNP column will be used for LD analysis.}
+#'  \item{R2}{Squared correlation measure of linkage between the two variants. Data type: numeric}
+#' }
+#'
+"LD.df.example"

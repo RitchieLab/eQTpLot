@@ -224,7 +224,7 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
   eqtl.data$SNP.Id <- as.factor(eqtl.data$SNP.Id)
   combinedSNPS <- sort(union(levels(gwas.data$SNP), levels(eqtl.data$SNP.Id)))
   Combined.eQTL.GWAS.Data <- dplyr::left_join(dplyr::mutate(gwas.data, SNP=factor(SNP, levels=combinedSNPS)),
-                                              dplyr::mutate(eqtl.data, SNP.Id=factor(SNP.Id, levels=combinedSNPS)) %>% rename(SNP = SNP.Id))
+                                              dplyr::mutate(eqtl.data, SNP.Id=factor(SNP.Id, levels=combinedSNPS)) %>% dplyr::rename(SNP = SNP.Id))
   if(dim(Combined.eQTL.GWAS.Data)[1] == 0) {
     stop('Sorry, for the gene ', paste(gene), ' and the trait ', paste(trait), ' there is no overlap between the SNPs in your GWAS.df and eQTL.df')
   }
@@ -258,8 +258,8 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
   if(isTRUE(LD.df) == FALSE){
     print("Compiling LD information...")
     Combined.eQTL.GWAS.Data$pvaluemult <- Combined.eQTL.GWAS.Data$P.Value*Combined.eQTL.GWAS.Data$P
-    LD.df <- LD.df %>% filter(SNP_A %in% levels(Combined.eQTL.GWAS.Data$SNP))
-    LD.df <- LD.df %>% filter(SNP_B %in% levels(Combined.eQTL.GWAS.Data$SNP))
+    LD.df <- LD.df %>% dplyr::filter(SNP_A %in% levels(Combined.eQTL.GWAS.Data$SNP))
+    LD.df <- LD.df %>% dplyr::filter(SNP_B %in% levels(Combined.eQTL.GWAS.Data$SNP))
     
     ### Select lead SNP for congruent data
     if(Congruentdata == TRUE){
@@ -268,7 +268,7 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
         if((as.character(Combined.eQTL.GWAS.Data%>% dplyr::filter(SNP == leadSNP) %>% dplyr::pull(Congruence)) == "Congruent") == TRUE){
         mostsigsnp.cong <- leadSNP
       }}
-      Combined.eQTL.GWAS.Data <- left_join(Combined.eQTL.GWAS.Data, LD.df %>% dplyr::filter(SNP_A == mostsigsnp.cong) %>% dplyr::select(c("SNP_B","R2")), by = c("SNP" = "SNP_B"))
+      Combined.eQTL.GWAS.Data <- dplyr::left_join(Combined.eQTL.GWAS.Data, LD.df %>% dplyr::filter(SNP_A == mostsigsnp.cong) %>% dplyr::select(c("SNP_B","R2")), by = c("SNP" = "SNP_B"))
       names(Combined.eQTL.GWAS.Data)[names(Combined.eQTL.GWAS.Data) == "R2"] <- "R2cong"
       names(Combined.eQTL.GWAS.Data)[names(Combined.eQTL.GWAS.Data) == "SNP_B"] <- "SNP_Bcong"
       Combined.eQTL.GWAS.Data.cong <- subset(Combined.eQTL.GWAS.Data, SNP == mostsigsnp.cong)
@@ -281,7 +281,7 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
         if((as.character(Combined.eQTL.GWAS.Data%>% dplyr::filter(SNP == leadSNP) %>% dplyr::pull(Congruence)) == "Incongruent") == TRUE){
         mostsigsnp.incong <- leadSNP
       }}
-      Combined.eQTL.GWAS.Data <- left_join(Combined.eQTL.GWAS.Data, LD.df %>% dplyr::filter(SNP_A == mostsigsnp.incong) %>% dplyr::select(c("SNP_B","R2")), by = c("SNP" = "SNP_B"))
+      Combined.eQTL.GWAS.Data <- dplyr::left_join(Combined.eQTL.GWAS.Data, LD.df %>% dplyr::filter(SNP_A == mostsigsnp.incong) %>% dplyr::select(c("SNP_B","R2")), by = c("SNP" = "SNP_B"))
       names(Combined.eQTL.GWAS.Data)[names(Combined.eQTL.GWAS.Data) == "R2"] <- "R2incong"
       names(Combined.eQTL.GWAS.Data)[names(Combined.eQTL.GWAS.Data) == "SNP_B"] <- "SNP_Bincong"
       Combined.eQTL.GWAS.Data.incong <- subset(Combined.eQTL.GWAS.Data, SNP == mostsigsnp.incong)
@@ -306,7 +306,7 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
     dat2 <- data.frame(matrix(nrow = 2, ncol = ncol(LD.df.matrix)))
     rownames(dat2) <- c("startpos", "stoppos")
     colnames(dat2) <- colnames(LD.df.matrix)
-    bind_rows(LD.df.matrix, dat2) -> LD.df.matrix
+    dplyr::bind_rows(LD.df.matrix, dat2) -> LD.df.matrix
     LD.df.matrix[,c("startpos", "stoppos")] <- NA
     matrix <- as.matrix(LD.df.matrix)
     un1 <- unique(sort(c(colnames(LD.df.matrix), rownames(LD.df.matrix))))
@@ -315,7 +315,7 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
     matrix <- t(matrix2)
     LD.df.matrix <- dplyr::coalesce(as.data.frame(matrix), as.data.frame(matrix2))
     LD.df.matrix[is.na(LD.df.matrix)] = 0
-    SNPPositions <- unique(bind_rows(unique(LD.df[which(LD.df$SNP_A %in% colnames(LD.df.matrix)), c('SNP_A', 'BP_A')]), unique(LD.df[which(LD.df$SNP_B %in% colnames(LD.df.matrix)), c('SNP_B', 'BP_B')] %>% rename(SNP_A = 1, BP_A = 2))))
+    SNPPositions <- unique(dplyr::bind_rows(unique(LD.df[which(LD.df$SNP_A %in% colnames(LD.df.matrix)), c('SNP_A', 'BP_A')]), unique(LD.df[which(LD.df$SNP_B %in% colnames(LD.df.matrix)), c('SNP_B', 'BP_B')] %>% dplyr::rename(SNP_A = 1, BP_A = 2))))
     SNPPositions[order(SNPPositions$BP_A),] -> SNPPositions
     rownames(SNPPositions) <- SNPPositions$SNP_A
     SNPPositions[order(SNPPositions$BP_A),]$SNP_A -> SNPorder
@@ -495,7 +495,7 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
     }
     
   if(LDcolor == "color"){
-    colorscale <-c(viridis(30, option = "C", direction = -1), "white")
+    colorscale <-c(viridisLite::viridis(30, option = "C", direction = -1), "white")
     } else {if(LDcolor == "black"){
       colorscale <- c("grey10", "grey20", "grey30", "grey40","grey50", "grey60", "grey70", "grey80", "grey90","grey100", "white")
     }
@@ -718,21 +718,21 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
 
   
   if(isTRUE(LD.df) == FALSE & Incongruentdata == FALSE){
-    p4 <- ((p1 + genetracks + wrap_elements(ggplotify::as.ggplot(LDmap$LDheatmapGrob) +theme(plot.margin=unit(c(-0.5,0,-2,0),"npc")) +coord_fixed()) + patchwork::plot_layout(nrow = 3, byrow = FALSE, heights = c(2,(genometrackheight/5),NA))) |
-            (p2 / p3.1 / plot_spacer())) +
+    p4 <- ((p1 + genetracks + patchwork::wrap_elements(ggplotify::as.ggplot(LDmap$LDheatmapGrob) +theme(plot.margin=unit(c(-0.5,0,-2,0),"npc")) +coord_fixed()) + patchwork::plot_layout(nrow = 3, byrow = FALSE, heights = c(2,(genometrackheight/5),NA))) |
+            (p2 / p3.1 / patchwork::plot_spacer())) +
     patchwork::plot_layout(ncol = 2, widths = c(2.5,1)) +
     patchwork::plot_annotation(tag_levels = 'A', tag_suffix = ".") & theme(plot.tag = element_text(size = 18), text = element_text(size = 12), plot.tag.position = c(0, 0.995))
   }
   
   if(isTRUE(LD.df) == FALSE & Congruentdata == FALSE){
-    p4 <- ((p1 + genetracks + wrap_elements(ggplotify::as.ggplot(LDmap$LDheatmapGrob) +theme(plot.margin=unit(c(-0.5,0,-2,0),"npc")) +coord_fixed()) + patchwork::plot_layout(nrow = 3, byrow = FALSE, heights = c(2,(genometrackheight/5),NA))) |
-             (p2 / p3.2 / plot_spacer())) +
+    p4 <- ((p1 + genetracks + patchwork::wrap_elements(ggplotify::as.ggplot(LDmap$LDheatmapGrob) +theme(plot.margin=unit(c(-0.5,0,-2,0),"npc")) +coord_fixed()) + patchwork::plot_layout(nrow = 3, byrow = FALSE, heights = c(2,(genometrackheight/5),NA))) |
+             (p2 / p3.2 / patchwork::plot_spacer())) +
       patchwork::plot_layout(ncol = 2, widths = c(2.5,1)) +
       patchwork::plot_annotation(tag_levels = 'A', tag_suffix = ".") & theme(plot.tag = element_text(size = 18), text = element_text(size = 12), plot.tag.position = c(0, 0.995))
   }
   
   if(isTRUE(LD.df) == FALSE & Congruentdata == TRUE & Incongruentdata == TRUE){
-    p4 <- ((p1 + genetracks + wrap_elements(ggplotify::as.ggplot(LDmap$LDheatmapGrob) +theme(plot.margin=unit(c(-0.5,0,-2,0),"npc")) +coord_fixed()) + patchwork::plot_layout(nrow = 3, byrow = FALSE, heights = c(2,(genometrackheight/5),NA))) |
+    p4 <- ((p1 + genetracks + patchwork::wrap_elements(ggplotify::as.ggplot(LDmap$LDheatmapGrob) +theme(plot.margin=unit(c(-0.5,0,-2,0),"npc")) +coord_fixed()) + patchwork::plot_layout(nrow = 3, byrow = FALSE, heights = c(2,(genometrackheight/5),NA))) |
              (p2 / p3.1 / p3.2)) +
       patchwork::plot_layout(ncol = 2, widths = c(2.5,1)) +
       patchwork::plot_annotation(tag_levels = 'A', tag_suffix = ".") & theme(plot.tag = element_text(size = 18), text = element_text(size = 12), plot.tag.position = c(0, 0.995))

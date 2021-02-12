@@ -19,7 +19,7 @@
 #'  \item{build}{The genome build (either "hg19" or "hg38") for the coordinate data. Data type: character 
 #'               The default Genes.df dataframe contains entries for both genome builds for each gene, 
 #'               and the script will select the appropriate entry based on the specified gbuild 
-#'               (default is hg19)).}
+#'               (default is hg19).}
 #' }
 #'
 "Genes.df.example"
