@@ -10,19 +10,35 @@ Authors@R:
 	     family = "Lucas",
 	     role = "cre",
 	     email = "anastasia.lucas.bioinfo@gmail.com"))
-Description: eQTpLot is an R package developed for the visualization of colocalization between eQTL and GWAS data. It requires a number of R packages (biomaRt , dplyr, GenomicRanges, ggnewscale, ggplot2, ggpubr, gridExtra, Gviz, patchwork) and takes as input two data frames (one of GWAS data, and the other of eQTL data), with the user specififying the name of the gene to be analyzed, the GWAS trait to be analyzed (useful if the GWAS data contains information on multiple associations, as one might obtain from a PheWAS), and the tissue type to use for the eQTL analysis (useful if eQTL data is available on multiple tissue types. A PanTissue analysis can be specified as well, combining data across tissue types for each variant). Additional parameters may be specified, including the p-value thresholds for GWAS or eQTL significance, the genomic range to be displayed, axis/layout modifications for the resultant graphs, etc. This data is then used to generate and output a series of plots visualizing colocalization, correlation, and enrichment between eQTL and GWAS signals for a given gene-trait pair.
+Description: eQTpLot is an R package developed for the visualization of colocalization between 
+             eQTL and GWAS data. It requires a number of R packages (biomaRt , dplyr, GenomicRanges, 
+             ggnewscale, ggplot2, ggpubr, gridExtra, Gviz, patchwork) and takes as input two data frames 
+             (one of GWAS data, and the other of eQTL data), with the user specififying the name of the 
+             gene to be analyzed, the GWAS trait to be analyzed (useful if the GWAS data contains information 
+             on multiple associations, as one might obtain from a PheWAS), and the tissue type to use for 
+             the eQTL analysis (useful if eQTL data is available on multiple tissue types. A PanTissue 
+             analysis can be specified as well, combining data across tissue types for each variant). 
+             Additional parameters may be specified, including the p-value thresholds for GWAS or eQTL significance, 
+             the genomic range to be displayed, axis/layout modifications for the resultant graphs, etc. This data 
+             is then used to generate and output a series of plots visualizing colocalization, correlation, and 
+             enrichment between eQTL and GWAS signals for a given gene-trait pair.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Imports: 
+    dplyr,
     patchwork,
+    gridExtra,
     Gviz,
     ggnewscale,
     GenomicRanges,
     biomaRt,
-    ggpubr
+    ggpubr,
+    ggplotify,
+    LDheatmap,
+    viridisLite
 Depends: 
     ggplot2 (>= 3.3.0),
-    R (>= 2.10)
+    R (>= 3.5.0)
