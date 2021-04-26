@@ -18,6 +18,33 @@ These clear and comprehensive plots provide a unique view of eQTL-GWAS colocaliz
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 
+
+## Table of Contents
+  - [Installation](#installation)
+  - [Input files](#input-files)
+      - [GWAS.df](#gwasdf)
+      - [eQTL.df](#eqtldf)
+      - [Genes.df](#genesdf)
+      - [LD.df](#lddf)
+  - [Function arguments](#function-arguments)
+  - [Notes on Analysis](#notes-on-analysis)
+      - [Congruence/Incongruence](#congruence-incongruence)
+      - [PanTissue and MultiTissue Analysis](#pantissue-and-multitissue-analysis)
+  - [Generation of Each Panel](#generation-of-each-panel)
+      - [Generation of the main eQTL-GWAS Colocalization Plot](#generation-of-the-main-eqtl-gwas-colocalization-plot)
+      - [Generation of the eQTL Enrichment Plot](#generation-of-the-eqtl-enrichment-plot)
+      - [Generation of P-P Correlation Plots](#generation-of-p-p-correlation-plots)
+  - [Use Examples](#use-examples)
+    + [Example 1 – comparing eQTpLots for two genes within a linkage peak](#example-1---comparing-eqtplots-for-two-genes-within-a-linkage-peak)
+      - [Figure 1](#figure-1)
+      - [Figure 2](#figure-2)
+    + [Example 2 –The `TissueList` function and adding LD information to eQTpLot](#example-2--the--tissuelist--function-and-adding-ld-information-to-eqtplot)
+      - [Figure 3](#figure-3)
+    + [Example 3 – Separating Congruous from Incongruous Variants](#example-3---separating-congruous-from-incongruous-variants)
+      - [Figure 4](#figure-4)
+
+
+
 ## Installation
 
 eQTpLot can be install using `devtools`, either directly from GitHub,
