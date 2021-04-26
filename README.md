@@ -240,7 +240,7 @@ Unlike the previous example for *BBS1*, Figure 2 shows very poor evidence for co
 ### Example 2 –The `TissueList` function and adding LD information to eQTpLot
 The plots generated in Example 1 illustrated colocalization between *BBS1* eQTLs and the GWAS peak for LDL cholesterol on chromosome 11, using a PanTissue analysis approach. The user may next wish to investigate if there are specific tissues in which *BBS1* expression is most clearly correlated with the LDL GWAS peak. Using the `TissueList` function of eQTpLot as follows:
 
-    eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene ="BBS1", gbuild = "hg19",  trait = "LDL", tissue =  "all", TissueList = T
+    eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene ="BBS1", gbuild = "hg19",  trait = "LDL", tissue =  "all", TissueList = T)
     
 eQTpLot generates Pearson correlation statistics between P<sub>GWAS</sub> and P<sub>eQTL</sub> for *BBS1* and the LDL trait across each tissue contained within `eQTL.df`. The resultant output, ranked by degree of correlation, is as follows:
 
