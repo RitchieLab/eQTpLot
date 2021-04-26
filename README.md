@@ -116,7 +116,7 @@ The formatting parameters of all both required and both optional input files are
 `CHR`|Chromosome the gene is on *Note: do not include a "car" prefix, and sex chromosomes should be coded numerically.* Data type: integer
 `Start`|Chromosomal coordinate of start position (in basepairs) to use for gene *Note: this should be the smaller of the two values between `Start` and `Stop`.* Data type: integer
 `Stop`|Chromosomal coordinate of end position (in basepairs) to use for gene *Note: this should be the larger of the two values between `Start` and `Stop`.* Data type: integer  
-`Build`|The genome build (either hg19 or hg38) for the coordinate data -- the default `Genes.df` dataframe contains entries for both genome builds for each gene, and the script will select the appropriate entry based on the specified `gbuild` (default is hg19)). Data type: character, either "hg19" or "hg38"
+`Build`|The genome build for the coordinate data -- the default `Genes.df` dataframe contains entries for both genome builds for each gene, and the script will select the appropriate entry based on the specified `gbuild` (default is `"hg19"`)). Data type: character, `c("hg19", "hg38")`
 
 ```
 > data(Genes.df.example)
@@ -140,9 +140,9 @@ The formatting parameters of all both required and both optional input files are
 **Column**|**Description**
 -----|:-----
 `BP_A`|Base pair position of the first variant in the LD pair. Data type: integer	
-`SNP_A`|Variant ID of the first variant in the LD pair *Note: only variants that also appear in the `GWAS.df` SNP column will be used for LD analysis.* Data type: character	
+`SNP_A`|Variant ID of the first variant in the LD pair. Data type: character	
 `BP_B`|Base pair position of the second variant in the LD pair. Data type:integer
-`SNP_B`|Variant ID of the second variant in the LD pair *Note: only SNPs that also appear in the `GWAS.df` SNP column will be used for LD analysis.* Data type: character
+`SNP_B`|Variant ID of the second variant in the LD pair. Data type: character
 `R2`|Squared correlation measure of linkage between the two variants. Data type: numeric
 
 ```
@@ -157,25 +157,26 @@ The formatting parameters of all both required and both optional input files are
 6    11 66078129 rs1625595    11 66080770        rs7924580 0.309860
 ```
 
+*Note: variants in SNP_A and SNP_B must also appear in the `GWAS.df` SNP column to be used for LD analysis.*
+
 <p>&nbsp;</p>
 <p>&nbsp;</p>
    
 
 ## Function arguments
-To run `eQTpLot`, a number of arguments must be specified. A number of optional arguments are available as well to customize and adjust the resultant plots.
 
 **Required Arguments**
 
 Argument|Description
 -----|-----
-`eQTL.df`|A data frame of eQTL summary statistic data, as defined above
-`GWAS.df`|A data frame of GWAS summary statistic data, as defined above
-`gbuild`|**Default value is “hg19”**. The genome build, in quotes, to use for fetching genomic information for the genome track (panel B). This build should match the genome build used for `CHR` and `BP` in the `GWAS.df`. Currently the only compatible options are “hg19” and “hg38”
-`gene`|name/symbol of the gene to analyze, in quotes *Note: gene name must match an entry in `Genes.df` for the specified gbuild*
-`sigpvalue_eQTL`|**Default value is 0.05**. The significance threshold to use for eQTL data (variants with an eQTL p-value larger than this threshold will be excluded from the analysis)
-`sigpvalue_GWAS`|**Default value is 5e-8**. The significance threshold to use for GWAS data (this value will be used for a horizontal line in plot A, and to define GWAS significant/non-significant variants for the eQTL enrichment plot). 
-`tissue`|**Default value is “all”**. The tissue name, in quotes, to use for analysis. `eQTL.df` entries will be filtered to contain only data on this tissue. If this parameter is set to “all”, eQTpLot will pick the smallest eQTL p-value for each SNP across all tissues for a PanTissue analysis (described in more detail below). Alternatively, a list of tissue names can be supplied (in the format c(“tissue1”, “tissue2”, …) to perform a MultiTissue analysis on just these tissues. *Note: the tissue name must match at least one entry in the `eQTL.df` `Tissue` column*
-`trait`|name of the GWAS phenotype to analyze, in quotes. If all the data in `GWAS.df` is for a single phenotype and no `PHE` column is present, this argument will be used as the name for the analyzed phenotype. If `GWAS.df` contains information on multiple phenotypes, as specified in the optional `GWAS.df` `PHE` column, this parameter will be used to filter in `GWAS.df` entries for only this phenotype.
+`eQTL.df`|a data frame of eQTL summary statistic data, as defined above
+`GWAS.df`|a data frame of GWAS summary statistic data, as defined above
+`gbuild`|**Default: “hg19”**. The genome build to use for fetching genomic information for the genome track (panel B). This build should match the genome build used for chromosomal positions in `GWAS.df`. Currently compatibile with hg19 and hg38.
+`gene`| gene name or symbol *Note: gene name must match an entry in `Genes.df` for the specified gbuild*
+`sigpvalue_eQTL`|**Default: 0.05**. Significance threshold for eQTL data (variants with eQTL p-value > `sigpvalue_eQTL` are excluded from analysis)
+`sigpvalue_GWAS`|**Default: 5e-8**. Significance threshold for GWAS data (corresponds to the horizontal line in plot A and GWAS significance thresholds for the eQTL enrichment plot). 
+`tissue`|**Default: “all”**. Single tissue or list of tissue names to filter `eQTL.df` by. If this parameter is set to “all”, eQTpLot will pick the smallest eQTL p-value for each SNP across all tissues for a PanTissue analysis (described in more detail below). *Note: the tissue name must match at least one entry in the `eQTL.df` `Tissue` column*
+`trait`|name of the GWAS phenotype to analyze. If no `PHE` column is present in `GWAS.df`, this argument will be used as the name for the analyzed phenotype. If `GWAS.df` contains multiple phenotypes in the `PHE` column, this parameter will be used to filter in `GWAS.df` for only this phenotype.
 
 <p>&nbsp;</p>
 
@@ -185,10 +186,10 @@ Argument|Description
 -----|-----
 `Genes.df`|A data frame of gene coordinates, as defined above
 `LD.df`|A data frame of pairwise linkage data, as defined above
-`congruence`|**Default value is FALSE**. If set to TRUE, variants with congruent and incongruent effects will be plotted separately, as described below. 
-`genometrackheight`|**Default value is 2**. Used to set the height of the genome track panel (B). Gene-dense regions may require more plotting space, whereas gene-sparse regions may look better with less plotting space.
-`getplot`|**Default value is TRUE**. If set to FALSE, eQTpLot will not display the generated plot in the viewport.
-`LDcolor`|Only used if `LD.df` is supplied. **Default value is “color”**. For the LDheatmap panel, the heatmap will be filled using a grayscale palate if this argument is set to “black”, or with a full color palate if this argument is set to “color”.
+`congruence`|**Default: FALSE**. If set to TRUE, variants with congruent and incongruent effects will be plotted separately, as described below. 
+`genometrackheight`|**Default: 2**. Used to set the height of the genome track panel (B). Gene-dense regions may require more plotting space, whereas gene-sparse regions may look better with less plotting space.
+`getplot`|**Default: TRUE**. If set to FALSE, eQTpLot will not display the generated plot in the viewport.
+`LDcolor`|Only used if `LD.df` is supplied. **Default: “color”**. For the LDheatmap panel, the heatmap will be filled using a grayscale palate if this argument is set to “black”, or with a full color palate if this argument is set to “color”.
 `LDmin`|Only used if `LD.df` is supplied. **Default value is 10**. For the LDheatmap panel, only variants that are in LD (with R<sup>2</sup> > `R2min`) with at least this many other variants will be displayed. This parameter can be useful to thin the number of variants being plotted in the LDheatmap.
 `leadSNP`|Only used if `LD.df` is supplied. This parameter is used to specify the lead SNP ID, in quotes, to use for plotting LD information in the P-P plots. The specified variant must be present in both the `GWAS.df` and `LD.df` data frames.
 `NESeQTLRange`|the maximum and minimum limits in the format c(min,max), to display for the `NES` value in `eQTL.df`. The default setting will adjust the size scale automatically to fit the displayed data, whereas specifying the limits will keep them consistent between plots.
