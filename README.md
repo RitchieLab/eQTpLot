@@ -1,7 +1,20 @@
 # eQTpLot
 
 ## Visualization of Colocalization Between eQTL and GWAS Data
-eQTpLot is an intuitive and user-friendly R package developed for the visualization of colocalization between eQTL and GWAS data. eQTpLot takes as input standard GWAS and eQTL summary statistics, and optional pairwise LD information, to generate a series of plots visualizing colocalization, correlation, and enrichment between eQTL and GWAS signals for a given gene-trait pair. With eQTpLot, investigators can easily generate a series of customizable plots clearly illustrating, for a given gene-trait pair: 1) colocalization between GWAS and eQTL signals, 2) correlation between GWAS and eQTL p-values, 3) enrichment of eQTLs among trait-significant variants, 4) the LD landscape of the locus in question, and 5) the relationship between the direction of effect of eQTL signals and the direction of effect of colocalizing GWAS peaks. These clear and comprehensive plots provide a unique view of eQTL-GWAS colocalization, allowing for a more complete understanding of the interaction between gene expression and trait associations. eQTpLot was developed in R version 4.0.0 and depends on a number of packages for various aspects of its implementation (biomaRt, dplyr, GenomicRanges, ggnewscale, ggplot2, ggplotify, ggpubr, gridExtra, Gviz, LDheatmap, patchwork). We have made eQTpLot freely available for use at the command line or in any R-based integrated development environment, such as RStudio. 
+eQTpLot is an intuitive and user-friendly R package developed for the visualization of colocalization between eQTL and GWAS data. eQTpLot takes as input standard GWAS and eQTL summary statistics, and optional pairwise LD information, to generate a series of plots visualizing colocalization, correlation, and enrichment between eQTL and GWAS signals for a given gene-trait pair. With eQTpLot, investigators can easily generate a series of customizable plots clearly illustrating, for a given gene-trait pair: 
+
+<ol>
+<li>colocalization between GWAS and eQTL signals</li> 
+<li>correlation between GWAS and eQTL p-values</li>
+<li>enrichment of eQTLs among trait-significant variants</li>
+<li>the LD landscape of the locus in question</li>
+<li>the relationship between the direction of effect of eQTL signals and the direction of effect of colocalizing GWAS peaks</li> 
+</ol>
+
+These clear and comprehensive plots provide a unique view of eQTL-GWAS colocalization, allowing for a more complete understanding of the interaction between gene expression and trait associations. eQTpLot was developed in R version `4.0.0` and depends on a number of packages for various aspects of its implementation 
+
+`c("biomaRt", "dplyr", "GenomicRanges", "ggnewscale", "ggplot2", "ggplotify", "ggpubr", "gridExtra", "Gviz", "LDheatmap", "patchwork")`
+
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
@@ -24,7 +37,21 @@ or by downloading the repository to your computer, unzipping, and installing the
 <p>&nbsp;</p>
 
 ## Input files
-At a minimum, eQTpLot requires two input files, imported into R as data frames: one of GWAS summary statistics (as might be obtained from a standard associations study as completed in PLINK) and one of eQTL summary statistics (as might be downloaded directly from the GTEx portal at gtexportal.org). Two optional data frames may also be supplied -- one of pairwise linkage disequilibrium (LD) data for the analyzed variants, and the other of gene coordinates. The formatting parameters of all both required and both optional input files are summarizes here.
+At a minimum, eQTpLot requires two input data frames: 
+
+<ol>
+<li>GWAS summary statistics (as might be obtained from a standard associations study as completed in PLINK)</li>
+<li>eQTL summary statistics (as might be downloaded directly from the GTEx portal at gtexportal.org)</li> 
+</ol>
+
+Two optional data frames may also be supplied:
+
+<ol>
+<li>pairwise linkage disequilibrium (LD) data for the analyzed variants</li>
+<li>gene coordinates</li> 
+</ol>
+
+The formatting parameters of all both required and both optional input files are summarized below.
 
 #### GWAS.df
 `GWAS.df` is a data frame of GWAS summary data, with one row per SNP, with columns as one might obtain from a genome-wide association study performed in PLINK using either the --logistic or --linear flags. `GWAS.df` should contain the following columns:
