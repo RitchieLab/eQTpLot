@@ -7,7 +7,7 @@
 #' @usage data(Genes.df.example)
 #'
 #' @format Dataframe, one row per SNP, with 6 columns
-#' \describe {
+#' \describe{
 #'  \item{Gene}{Gene symbol/name for which the Coordinate data refers to. Data type: character 
 #'              Note: gene symbol/name must match entries in eQTL.df to ensure proper matching.}
 #'  \item{CHR}{Chromosome the gene is on. Data type: integer 

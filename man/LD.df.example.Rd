@@ -6,7 +6,7 @@
 \title{LD data}
 \format{
 Dataframe of SNP linkage data, one row per SNP pair, with 5 columns (PLINK --r2 output format)
-\describe {
+\describe{
 \item{BP_A}{Base pair position of the first variant in the LD pair. Data type: integer}
 \item{SNP_A}{Variant ID of the first variant in the LD pair. Data type: character
 Note: only variants that also appear in the GWAS.df SNP column will be used for LD analysis.}
