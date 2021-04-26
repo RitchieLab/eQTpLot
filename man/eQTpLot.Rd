@@ -24,12 +24,15 @@ eQTpLot(
   ylima = NA,
   ylimd = NA,
   xlimd = NA,
-  genometrackheight = 1.5,
+  genometrackheight = 2,
   gbuild = "hg19",
   res = 300,
   wi = "wi",
+  CollapseMethod = "min",
   getplot = TRUE,
-  saveplot = TRUE
+  saveplot = TRUE,
+  GeneList = FALSE,
+  TissueList = FALSE
 )
 }
 \arguments{
@@ -52,7 +55,8 @@ NES          NES (normalized effect size) for the SNP from eQTL analysis
 (i.e., the eQTL effect allele is the ALT allele). NES are computed in a normalized space where magnitude has no direct biological interpretation.)
 Tissue       Tissue type to which the eQTL pvalue/beta refer
 (Note: eQTL.df can contain multiple tissue types. Specifying the tissue type to be analyzed will filter only for eQTL entires for this tissue type.
-Alternatively, setting tissue type to "all" (the default setting) will automatically pick the smallest eQTL pvalue for each SNP across all tissues for a PanTissue analysis)}
+Alternatively, setting tissue type to "all" (the default setting) will automatically pick the smallest eQTL pvalue for each SNP across all tissues for a PanTissue analysis)
+N            (Optional) The number of samples used to calculate the p-value and NES for the eQTL data. This value is used if performing a MultiTissue or PanTissue analysis with the option eQTL.Collapse.Method set to "meta"}
 
 \item{Genes.df}{Dataframe, one row per gene, with the following columns
 (Note: eQTpLot automatically loads a default Genes.df database containing information for both genomic builds hg19 and hg38,
@@ -105,7 +109,7 @@ can keep them consistent between plots.}
 
 \item{xlimd}{used to manually adjust the x axis limit for the P-P plot, if needed}
 
-\item{genometrackheight}{used to set the height of the genome track panel (B), with default setting of 1.5.
+\item{genometrackheight}{used to set the height of the genome track panel (B), with default setting of 2.
 Gene-dense regions may require more plotting space, whereas gene-poor regions may look better with less plotting space.}
 
 \item{gbuild}{the genome build to use, in quotes, for fetching genomic information for panel B.
@@ -115,10 +119,21 @@ Default is "hg19" but can specify "hg38" if needed. This build should match the 
 
 \item{wi}{the width of the output plot image (the height is calculated from this to maintain the correct aspect ratio)}
 
+\item{CollapseMethod}{the method used to collapse eQTL p-values and NES across tissues, if a MultiTissue or PanTissue analysis is used.
+Default is "min" (which selects the p-value and NES from the tissue with the smallest p-value for each variant).
+"median" and "mean" can be specified instead, which will take the median or mean of the p-value and NES for each variant, across all specified tissues
+"meta" can be specified instead, which will perform a simple weighted meta-analysis (Stouffer et al., 1949) of the p-values across the specified tissues.
+NOTE: If "meta" is specified, eQTL.df must include a column with header "N" indicating the number of samples used to derive the given eQTL pvalue.
+NOTE: If "meta" is specified, the Normalized Effect Size witll not be computed, and all variants will be displayed as the same size.}
+
 \item{getplot}{default is TRUE. If set to false, script will not dsiplay the generated plot in the viewer}
 
 \item{saveplot}{default is TRUE, script will save the generated plot in the working diretory with the name
 "gene.trait.tissue.eQTL.png" using the supplied variables}
+
+\item{GeneList}{used to obtain the Pearson correlation between eQTL and GWAS p-values for a given tissue across a user-supplied list of genes. Default is FALSE.}
+
+\item{TissueList}{used to obtain the Pearson correlation between eQTL and GWAS p-values for a given gene across a user-supplied list of tissues. Default is FALSE.}
 
 \item{sigpvalue_eQTLeQTL}{pvalue significance threshold to use (eQTL data with a pvalue larger than this threshold will be excluded from the analysis)}
 }
