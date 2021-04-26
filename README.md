@@ -15,7 +15,6 @@ These clear and comprehensive plots provide a unique view of eQTL-GWAS colocaliz
 
 `c("biomaRt", "dplyr", "GenomicRanges", "ggnewscale", "ggplot2", "ggplotify", "ggpubr", "gridExtra", "Gviz", "LDheatmap", "patchwork")`
 
-
 <p>&nbsp;</p>
 <p>&nbsp;</p>
 
@@ -40,9 +39,10 @@ or by downloading the repository to your computer, unzipping, and installing the
 At a minimum, eQTpLot requires two input data frames: 
 
 <ol>
-<li>GWAS summary statistics (as might be obtained from a standard associations study as completed in PLINK)</li>
-<li>eQTL summary statistics (as might be downloaded directly from the GTEx portal at gtexportal.org)</li> 
+<li>GWAS summary statistics (compatible with PLINK --linear/logistic output format https://www.cog-genomics.org/plink/1.9/formats#assoc_linear) </li>
+<li>eQTL summary statistics, ex. downloaded directly from the GTEx portal https://gtexportal.org/home/</li> 
 </ol>
+
 
 Two optional data frames may also be supplied:
 
@@ -54,7 +54,7 @@ Two optional data frames may also be supplied:
 The formatting parameters of all both required and both optional input files are summarized below.
 
 #### GWAS.df
-`GWAS.df` is a data frame of GWAS summary data, with one row per SNP, with columns as one might obtain from a genome-wide association study performed in PLINK using either the --logistic or --linear flags. `GWAS.df` should contain the following columns:
+`GWAS.df` is a data frame of GWAS summary data with one row per SNP, ex. PLINK `.assoc.linear, .assoc.logistic` format, containing the following columns:
 
 **Column**|**Description**
 -----|:-----
@@ -63,18 +63,24 @@ The formatting parameters of all both required and both optional input files are
   `SNP`|Variant ID (such as dbSNP ID "rs...". *Note: Must be the same naming scheme as used in `eQTL.df` to ensure proper matching).* Data type: character  
   `P`|p-value for the SNP from GWAS analysis. Data type: numeric 
   `BETA`|beta for the SNP from GWAS analysis. Data type: numeric 
-  `PHE`|*OPTIONAL* Name of the phenotype for which the GWAS data refers. This column is optional and is useful if your `GWAS.df` contains data for multiple phenotypes, such as one might obtain from a PheWAS. If `GWAS.df` does not contain a `PHE` column, eQTpLot will assume all the supplied GWAS data is for a single phenotype, with a name to be specified with the `trait` argument. Data type: character 
+  `PHE`|*OPTIONAL* Name of the phenotype for which the GWAS data refers, useful if your `GWAS.df` contains data for multiple phenotypes, i.e. PheWAS. If not provided, eQTpLot will assume the GWAS data is for a single phenotype, specified with the `trait` argument. Data type: character 
 
-**Example GWAS.df:**
+```
+> data(GWAS.df.example)
+> head(GWAS.df.example)
+  CHR       BP             SNP       P       BETA        PHE
+1  11 66078129       rs1625595 0.06646 -7.925e-05 Creatinine
+2  11 66078252     rs565374903 0.17350 -1.915e-02 Creatinine
+3  11 66078296     rs750544051 0.03073 -4.299e-02 Creatinine
+4  11 66078347 11:66078347_C_G 0.64030 -9.298e-03 Creatinine
+5  11 66078368     rs541384459 0.93890  5.763e-04 Creatinine
+6  11 66078385     rs138591375 0.34690  1.647e-03 Creatinine
+```
 
-   CHR|POS|SNP|BETA|P|PHE
------|-----|-----|-----|-----|-----
-   14|88500045|rs17123978|0.000479064|0.227412|eGFR
-   14|88500645|rs60623686|0.000118531|0.256264|eGFR
 <p>&nbsp;</p>
 
 #### eQTL.df
-`eQTL.df` is a data frame of eQTL data, one row per SNP, with columns as one might download directly from the GTEx Portal in .csv format. `eQTL.df` should contain the following columns:
+`eQTL.df` is a data frame of eQTL data, one row per SNP, ex. downloaded directly from the GTEx Portal in .csv format, containing the following columns:
 
 **Column**|**Description**
 -----|:-----
