@@ -84,24 +84,31 @@ The formatting parameters of all both required and both optional input files are
 
 **Column**|**Description**
 -----|:-----
-  `SNP.Id`|Variant ID (such as dbSNP ID "rs...".*Note: naming scheme must be the same as what is used in the `GWAS.df` to ensure proper matching.* Data type: character
+  `SNP.Id`|Variant ID *Note: naming scheme must be the same as what is used in the `GWAS.df` to ensure proper matching.* Data type: character
   `Gene.Symbol`|Gene symbol to which the eQTL expression data refers *Note: gene symbol must match entries in `Genes.df` to ensure proper matching.* Data type: character
   `P.value`|P-value for the SNP from eQTL analysis Data type: numeric  
   `NES`|Normalized effect size for the SNP from eQTL analysis (Per GTEx, defined as the slope of the linear regression, and is computed as the effect of the alternative allele relative to the reference allele in the human genome reference. Data type: numeric 
   `Tissue`|Tissue type to which the eQTL p-value/NES refer *Note: eQTL.df can contain multiple tissue types.* Data type: character
-  `N`|*OPTIONAL* The number of samples used to calculate the p-value and NES for the eQTL data. This value is used if performing a MultiTissue or PanTissue analysis with the option CollapseMethod set to "meta" for a simple sample size weighted meta-analysis. Data type: character
+  `N`|*OPTIONAL* Number of samples used to calculate the p-value and NES for the eQTL data, used if performing a MultiTissue or PanTissue analysis with the option CollapseMethod set to "meta" for a simple sample size weighted meta-analysis. Data type: character
 
-**Example eQTL.df:**
-
-   Gene.Symbol|SNP.Id|P.value|NES|Tissue
------|-----|-----|-----|-----
-  PTPN21|rs147470573|0.0479617|-0.156095|Adipose_Subcutaneous
-  PTPN21|rs60688436|0.0479617|-0.156095|Adipose_Subcutaneous
+```
+> data(eQTL.df.example)
+> head(eQTL.df.example)
+  Gene.Symbol      SNP.Id   P.Value       NES               Tissue
+1       PELI3 rs138677235 0.0377103 -0.139874 Adipose_Subcutaneous
+2       PELI3 rs111472085 0.0131649  0.257579 Adipose_Subcutaneous
+3       PELI3  rs75325358 0.0442168 -0.147111 Adipose_Subcutaneous
+4       PELI3 rs113298476 0.0442168 -0.147111 Adipose_Subcutaneous
+5       PELI3  rs73490435 0.0134318  0.256645 Adipose_Subcutaneous
+6       PELI3 rs112219657 0.0387010  0.214056 Adipose_Subcutaneous
+```
   
 <p>&nbsp;</p>
 
 #### Genes.df
-`Genes.df` is an optional data frame, one row per gene, which should contain the following columns: *Note: eQTpLot automatically loads a default `Genes.df` containing information for most protein-coding genes for genome builds hg19 and hg38, but you may wish to specify our own `Genes.df` data frame if your gene of interest is not included in the default data frame, or if your eQTL data uses a different gene naming scheme (for example, Gencode ID instead of gene symbol)*
+`Genes.df` is an optional data frame, one row per gene, which should contain the following columns: 
+
+*Note: eQTpLot automatically loads a default `Genes.df` containing information for most protein-coding genes for genome builds hg19 and hg38, but you may wish to specify our own `Genes.df` data frame if your gene of interest is not included in the default data frame, or if your eQTL data uses a different gene naming scheme (for example, Gencode ID instead of gene symbol)*
 
 **Column**|**Description**
 -----|:-----
@@ -111,19 +118,24 @@ The formatting parameters of all both required and both optional input files are
 `Stop`|Chromosomal coordinate of end position (in basepairs) to use for gene *Note: this should be the larger of the two values between `Start` and `Stop`.* Data type: integer  
 `Build`|The genome build (either hg19 or hg38) for the coordinate data -- the default `Genes.df` dataframe contains entries for both genome builds for each gene, and the script will select the appropriate entry based on the specified `gbuild` (default is hg19)). Data type: character, either "hg19" or "hg38"
 
-
-**Example Genes.df:**
-
-   Gene|CHR|Start|Stop|Build
------|-----|-----|-----|-----
-  EML5|14|89078491|89259096|hg19
-  KCNK10|14|88646451|88793256|hg19
-
+```
+> data(Genes.df.example)
+> head(Genes.df.example)
+  CHR    Start     Stop    Gene Build
+1  19 58858171 58864865    A1BG  hg19
+2  10 52559168 52645435    A1CF  hg19
+3  12  9220303  9268825     A2M  hg19
+4  12  8975067  9039798   A2ML1  hg19
+5   1 33772366 33786699 A3GALT2  hg19
+6  22 43088117 43117307  A4GALT  hg19
+```
 
 <p>&nbsp;</p>
 
 #### LD.df
-`LD.df` is an optional data frame of SNP linkage data, one row per SNP pair, with columns as one might obtain from a PLINK linkage disequilibrium analysis using the PLINK --r2 option. *Note: If no `LD.df` is supplied, eQTpLot will plot data without LD information*
+`LD.df` is an optional data frame of SNP linkage data, one row per SNP pair, compatible with PLINK .ld (--r/--r2) file format https://www.cog-genomics.org/plink/1.9/formats#ld
+
+*Note: If no `LD.df` is supplied, eQTpLot will plot data without LD information*
 
 **Column**|**Description**
 -----|:-----
@@ -133,13 +145,17 @@ The formatting parameters of all both required and both optional input files are
 `SNP_B`|Variant ID of the second variant in the LD pair *Note: only SNPs that also appear in the `GWAS.df` SNP column will be used for LD analysis.* Data type: character
 `R2`|Squared correlation measure of linkage between the two variants. Data type: numeric
 
-
-**Example LD.df:**
-
-   BP_A|SNP_A|BP_B|SNP_B|R2
------|-----|-----|-----|-----|
-66078129|rs162559|66079275|11:66079275_GA_G|0.29955
-66078129|rs1625595|66079361|rs33981819|0.686453
+```
+> data(LD.df.example)
+> head(LD.df.example)
+  CHR_A     BP_A     SNP_A CHR_B     BP_B            SNP_B       R2
+1    11 66078129 rs1625595    11 66079275 11:66079275_GA_G 0.299550
+2    11 66078129 rs1625595    11 66079361       rs33981819 0.686453
+3    11 66078129 rs1625595    11 66079786         rs490972 0.991748
+4    11 66078129 rs1625595    11 66079787         rs565972 0.991756
+5    11 66078129 rs1625595    11 66079818       rs61891388 0.706614
+6    11 66078129 rs1625595    11 66080770        rs7924580 0.309860
+```
 
 <p>&nbsp;</p>
 <p>&nbsp;</p>
