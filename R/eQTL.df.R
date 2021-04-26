@@ -7,7 +7,7 @@
 #' @usage data(eQTL.df.example)
 #'
 #' @format Dataframe, one row per SNP, with 5 columns
-#' \describe {
+#' \describe{
 #'   \item{SNP.Id}{Variant ID (such as dbSNP ID "rs..."). Data type: character
 #'                 Note: naming scheme must be the same as what is used in the GWAS.df to ensure proper matching.}
 #'   \item{Gene.Symbol}{Gene symbol to which the eQTL expression data refers. Data type: character 

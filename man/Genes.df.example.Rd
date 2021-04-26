@@ -6,7 +6,7 @@
 \title{Gene data}
 \format{
 Dataframe, one row per SNP, with 6 columns
-\describe {
+\describe{
 \item{Gene}{Gene symbol/name for which the Coordinate data refers to. Data type: character
 Note: gene symbol/name must match entries in eQTL.df to ensure proper matching.}
 \item{CHR}{Chromosome the gene is on. Data type: integer
@@ -22,7 +22,7 @@ and the script will select the appropriate entry based on the specified gbuild
 }
 
 Dataframe, one row per SNP, with 6 columns
-\describe {
+\describe{
 \item{Gene}{Gene symbol/name for which the Coordinate data refers to. Data type: character
 Note: gene symbol/name must match entries in eQTL.df to ensure proper matching.}
 \item{CHR}{Chromosome the gene is on. Data type: integer
