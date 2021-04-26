@@ -204,7 +204,11 @@ In this example, a GWAS study of LDL cholesterol levels has identified a signifi
 
 Using the `GeneList` function of eQTpLot, the user supplies both the *BBS1* and *ACTN3* genes to eQTpLot, along with all required input data, to obtain a crude estimation of which gene’s eQTL data most closely correlates with the GWAS signal observed at this locus. Calling eQTpLot as follows:
 
-    eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = c("BBS1", "ACTN3"), gbuild = "hg19",  trait = "LDL", tissue =  "all", CollapseMethod = "min", GeneList = T)
+```
+eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = c("BBS1", "ACTN3"), 
+        gbuild = "hg19",  trait = "LDL", tissue =  "all", CollapseMethod = "min", 
+        GeneList = T)
+```
 
 eQpLot generates Pearson correlation statistics between P<sub>GWAS</sub> and P<sub>eQTL </sub> for both genes and the LDL trait, using a PanTissue approach (collapsing by method “min” as described above). The output generated is:
 
@@ -213,7 +217,10 @@ eQpLot generates Pearson correlation statistics between P<sub>GWAS</sub> and P<s
 
 Demonstrating that there is significantly stronger correlation between the GWAS signal at this locus and eQTLs for the gene *BBS1*, compared to the gene *ACTN3*. To visualize these differences using eQTpLot, starting with the gene *BBS1*, eQTpLot can be called as follows:
 
-    eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = "BBS1", gbuild = "hg19",  trait = "LDL", tissue =  "all", CollapseMethod = "min")
+ ```
+ eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = "BBS1", 
+         gbuild = "hg19",  trait = "LDL", tissue =  "all", CollapseMethod = "min")
+```
 
 As written, this command will analyze the GWAS data, as contained within gwas.df.example, within a default 200kb range surrounding the *BBS1* gene, using the preloaded `Genes.df` to define the genomic boundaries of *BBS1* based on genome build hg19. eQTL data from eQTL.df.example will be filtered to contain only data pertaining to *BBS1*. Since `tissue` is set to “all,” eQTpLot will perform a PanTissue analysis, as described above. 
 
@@ -226,7 +233,10 @@ Figure 1 illustrates clear evidence of colocalization between the LDL-significan
 
 To investigate the possibility that the LDL association signal might also be acting through modulation of the expression of other genes at this locus, the same analysis can be performed, substituting the gene *ACTN3* for the gene *BBS1*, as in the following command:
 
-    eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = "ACTN3", gbuild = "hg19",  trait = "LDL", tissue =  "all", CollapseMethod = "min")
+```
+eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = "ACTN3", 
+        gbuild = "hg19",  trait = "LDL", tissue =  "all", CollapseMethod = "min")
+```
 
 This generates the following plot:
 
@@ -240,7 +250,10 @@ Unlike the previous example for *BBS1*, Figure 2 shows very poor evidence for co
 ### Example 2 –The `TissueList` function and adding LD information to eQTpLot
 The plots generated in Example 1 illustrated colocalization between *BBS1* eQTLs and the GWAS peak for LDL cholesterol on chromosome 11, using a PanTissue analysis approach. The user may next wish to investigate if there are specific tissues in which *BBS1* expression is most clearly correlated with the LDL GWAS peak. Using the `TissueList` function of eQTpLot as follows:
 
-    eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene ="BBS1", gbuild = "hg19",  trait = "LDL", tissue =  "all", TissueList = T)
+```
+eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene ="BBS1", 
+        gbuild = "hg19",  trait = "LDL", tissue =  "all", TissueList = T)
+```
     
 eQTpLot generates Pearson correlation statistics between P<sub>GWAS</sub> and P<sub>eQTL</sub> for *BBS1* and the LDL trait across each tissue contained within `eQTL.df`. The resultant output, ranked by degree of correlation, is as follows:
 
@@ -255,7 +268,11 @@ eQTpLot generates Pearson correlation statistics between P<sub>GWAS</sub> and P<
 
 This output demonstrates a strong correlation between LDL cholesterol levels and *BBS1* expression levels in a number of tissues. To further explore these associations, the user can specifically run eQTpLot on data from a single tissue, for example "Whole_Blood", while also supplying LD data to eQTpLot using the argument `LD.df`:
 
-    eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = "BBS1", gbuild = "hg19",  trait = "LDL", tissue =  "Whole_Blood", LD.df =LD.df.example, R2min = 0.25, LDmin = 100)
+```
+eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = "BBS1", 
+        gbuild = "hg19", trait = "LDL", tissue =  "Whole_Blood", 
+        LD.df =LD.df.example, R2min = 0.25, LDmin = 100)
+```
 
 Here the argument `LD.df` refers to a data frame containing a list of pairwise LD correlation measurements between all the variants within the LOI, as one might obtain from a PLINK linkage disequilibrium analysis using the --r2 option. Additionally, the parameter `R2min` is set to 0.25, indicating that `LD.df` should be filtered to drop variant pairs in LD with R<sup>2</sup> less than 0.25, and `LDmin` is set to 100, indicating that only variants in LD with at least 100 other variants should be plotted in the LD heatmap. 
 
@@ -271,7 +288,11 @@ Figure 3 is different than Figure 1 (the same eQTpLot analysis carried out witho
 ### Example 3 – Separating Congruous from Incongruous Variants
 In addition to including LD data in our eQTpLot analysis, we can also include information on the directions of effect of each variant, with respect to the GWAS trait and *BBS1* expression levels. This is accomplished by setting the argument `congruence` to TRUE:
 
-    eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = "BBS1", gbuild = "hg19",  trait = "LDL", tissue =  "Whole_Blood", LD.df = LD.df.example, R2min = 0.25, LDmin = 100, congruence = TRUE)
+```
+eQTpLot(GWAS.df = GWAS.df.example, eQTL.df = eQTL.df.example, gene = "BBS1", 
+        gbuild = "hg19",  trait = "LDL", tissue =  "Whole_Blood", LD.df = LD.df.example, 
+        R2min = 0.25, LDmin = 100, congruence = TRUE)
+```
 
 This generates the following plot:
 
