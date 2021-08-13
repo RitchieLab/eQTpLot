@@ -79,7 +79,7 @@
 #' @examples
 #' Saves to current directory
 #' eQTpLot(Genes.df = Genes.df.example, GWAS.df = GWAS.df.example,
-#'         eQTL.df = eQTL.df.example, gene = "SPATA7", trait = "LDL",
+#'         eQTL.df = eQTL.df.example, gene = "ACTN3", trait = "LDL",
 #'         getplot=FALSE)
 #' eQTpLot()
 
