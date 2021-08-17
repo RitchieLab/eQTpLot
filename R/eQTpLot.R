@@ -772,7 +772,7 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
       Combined.eQTL.GWAS.Data.incong <- subset(Combined.eQTL.GWAS.Data, SNP == mostsigsnp.incong)
     }
     
-
+    
     ### Filter and combine LD data, generate square LD matrix
     LD.df <- LD.df[which(LD.df$SNP_A %in% Combined.eQTL.GWAS.Data$SNP), ]
     LD.df <- LD.df[which(LD.df$SNP_B %in% Combined.eQTL.GWAS.Data$SNP), ]
@@ -799,6 +799,11 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
     LD.df.matrix[rownames(LD.df.matrix) %in% SNPsWithLDData, colnames(LD.df.matrix) %in% SNPsWithLDData] -> LD.df.matrix
     LD.df.matrix[is.na(LD.df.matrix)] = 0
     SNPPositions <- unique(dplyr::bind_rows(unique(LD.df[which(LD.df$SNP_A %in% colnames(LD.df.matrix)), c('SNP_A', 'BP_A')]), unique(LD.df[which(LD.df$SNP_B %in% colnames(LD.df.matrix)), c('SNP_B', 'BP_B')] %>% dplyr::rename(SNP_A = 1, BP_A = 2))))
+    SNPPositions2 <- data.frame(matrix(nrow = 2, ncol = 2))
+    colnames(SNPPositions2) <- colnames(SNPPositions)
+    SNPPositions2$SNP_A <- c("startpos", "stoppos")
+    SNPPositions2$BP_A <- c(startpos, stoppos)
+    dplyr::bind_rows(SNPPositions, SNPPositions2) -> SNPPositions
     SNPPositions[order(SNPPositions$BP_A),] -> SNPPositions
     rownames(SNPPositions) <- SNPPositions$SNP_A
     SNPPositions[order(SNPPositions$BP_A),]$SNP_A -> SNPorder
