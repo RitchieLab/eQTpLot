@@ -989,17 +989,60 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
     }
     
     ###Update heatmap graphics
-    LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$width <- unit(0.7, "snpc")
-    LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$height <- unit(0.7, "snpc")
-    LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$width <- unit(0.7, "snpc")
-    LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$height <- unit(0.7, "snpc")
-    LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$width <- unit(0.7, "snpc")
-    LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$height <- unit(0.7, "snpc")
+    
+    if(length(SNPsWithLDData) >= 50){
+      LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$width <- unit(0.69, "snpc")
+      LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$height <- unit(0.69, "snpc")
+      LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$width <- unit(0.69, "snpc")
+      LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$height <- unit(0.69, "snpc")
+      LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$width <- unit(0.69, "snpc")
+      LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$height <- unit(0.69, "snpc")}
+    
+    if(length(SNPsWithLDData) < 50 & length(SNPsWithLDData) >= 25){
+      LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$width <- unit(0.7, "snpc")
+      LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$height <- unit(0.7, "snpc")
+      LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$width <- unit(0.7, "snpc")
+      LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$height <- unit(0.7, "snpc")
+      LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$width <- unit(0.7, "snpc")
+      LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$height <- unit(0.7, "snpc")}
+      
+    if(length(SNPsWithLDData) < 25 & length(SNPsWithLDData) >= 15){
+    LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$width <- unit(0.725, "snpc")
+    LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$height <- unit(0.725, "snpc")
+    LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$width <- unit(0.725, "snpc")
+    LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$height <- unit(0.725, "snpc")
+    LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$width <- unit(0.725, "snpc")
+    LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$height <- unit(0.725, "snpc")}
+    
+    if(length(SNPsWithLDData) < 15 & length(SNPsWithLDData) >= 9){
+    LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$width <- unit(0.75, "snpc")
+    LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$height <- unit(0.75, "snpc")
+    LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$width <- unit(0.75, "snpc")
+    LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$height <- unit(0.75, "snpc")
+    LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$width <- unit(0.75, "snpc")
+    LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$height <- unit(0.75, "snpc")}
+    
+    if(length(SNPsWithLDData) < 9 & length(SNPsWithLDData) >= 5){
+    LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$width <- unit(0.8, "snpc")
+    LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$height <- unit(0.8, "snpc")
+    LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$width <- unit(0.8, "snpc")
+    LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$height <- unit(0.8, "snpc")
+    LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$width <- unit(0.8, "snpc")
+    LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$height <- unit(0.8, "snpc")}
+    
+    if(length(SNPsWithLDData) < 5){
+      LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$width <- unit(0.875, "snpc")
+      LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$height <- unit(0.875, "snpc")
+      LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$width <- unit(0.875, "snpc")
+      LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$height <- unit(0.875, "snpc")
+      LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$width <- unit(0.875, "snpc")
+      LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$height <- unit(0.875, "snpc")}
+    
     LDmap$LDheatmapGrob$children$heatMap$children$heatmap$vp$y <- unit(0.875, "npc")
     LDmap$LDheatmapGrob$children$geneMap$children$diagonal$vp$y <- unit(0.875, "npc")
     LDmap$LDheatmapGrob$children$geneMap$children$segments$vp$y <- unit(0.875, "npc")
     LDmap$LDheatmapGrob$children$Key$vp$y <- unit(0.65, "npc")
-    LDmap$LDheatmapGrob$children$Key$vp$x <- unit(0.95, "npc")
+    LDmap$LDheatmapGrob$children$Key$vp$x <- unit(0.925, "npc")
     LDmap$LDheatmapGrob$children$Key$vp$width <- unit(0.15, "npc")
     LDmap$LDheatmapGrob$children$Key$vp$height <- unit(0.05, "npc")
     LDmap$flipVP$justification <- c('center', 'top')
@@ -1007,6 +1050,7 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
     g.p1 <- ggplotGrob(p1)
     g.p1$widths -> g.ld$widths
   }
+
   
   ########################
   ###Generate eQTL Enrichment Plot
