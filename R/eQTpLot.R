@@ -77,11 +77,12 @@
 #' @importFrom magrittr "%>%"
 #' @export
 #' @examples
-#' Saves to current directory
+#' Saves plot to current directory
 #' eQTpLot(Genes.df = Genes.df.example, GWAS.df = GWAS.df.example,
 #'         eQTL.df = eQTL.df.example, gene = "ACTN3", trait = "LDL",
 #'         getplot=FALSE)
 #' eQTpLot()
+#' 
 
 ########################
 ### Required Packages
@@ -469,11 +470,11 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
       stop('Sorry, the  column N in eQTL.df must contain only numeric values')
     }}
   
-  if(is.numeric(GWAS.df$P) == FALSE | is.numeric(GWAS.df$BETA) == FALSE | is.integer(GWAS.df$BP) == FALSE | is.integer(GWAS.df$CHR) == FALSE) {
+  if(is.numeric(GWAS.df$P) == FALSE | is.numeric(GWAS.df$BETA) == FALSE | (is.integer(GWAS.df$BP) == FALSE & is.numeric(GWAS.df$BP) == FALSE) | (is.integer(GWAS.df$CHR) == FALSE & is.numeric(GWAS.df$CHR) == FALSE)) {
     stop('Sorry, the GWAS.df dataframe must contain only numeric data for CHR, BP, P, and BETA (Note: chromosomes must be coded numerically)')
   }
   
-  if(is.integer(Genes.df$CHR) == FALSE | is.integer(Genes.df$Start) == FALSE | is.integer(Genes.df$Stop) == FALSE) {
+  if((is.integer(Genes.df$CHR) == FALSE & is.numeric(Genes.df$CHR) == FALSE) | (is.integer(Genes.df$Start) == FALSE & is.numeric(Genes.df$Start) == FALSE) | (is.integer(Genes.df$Stop) == FALSE & is.numeric(Genes.df$Stop) == FALSE)) {
     stop('Sorry, the Genes.df dataframe must contain only integer values for CHR, Start, and Stop (Note: chromosomes must be coded nuemrically)')
   }
   
@@ -1081,19 +1082,19 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
                                             tip_length=0.05)}
   
   if(Congruentdata == TRUE & Incongruentdata == TRUE){
-    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("Non-eQTL", "Congruent eQTL", "Incongruent eQTL"), values = c("Congruent" = "#000099", "Incongruent" = "#990000", "Non-eQTL" = "#C0C0C0")) + 
+    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("Congruent eQTL", "Incongruent eQTL", "Non-eQTL"), values = c("Congruent" = "#000099", "Incongruent" = "#990000", "Non-eQTL" = "#C0C0C0")) + 
       ggplot2::guides(fill = guide_legend(title = NULL))}
   
   if(Congruentdata == TRUE & Incongruentdata == FALSE & congruence == TRUE){
-    p2 <- p2 + ggplot2::scale_fill_manual(labels = c( "Non-eQTL", "Congruent eQTL"), values = c("Congruent" = "#000099", "Non-eQTL" = "#C0C0C0")) +
+    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("Congruent eQTL", "Non-eQTL", ), values = c("Congruent" = "#000099", "Non-eQTL" = "#C0C0C0")) +
       ggplot2::guides(fill = guide_legend(title = NULL))}
   
   if(Congruentdata == TRUE & Incongruentdata == FALSE & congruence == FALSE){
-    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("Non-eQTL", "eQTL"), values = c("Congruent" = "#ffee00", "Non-eQTL" = "#360f70")) + 
+    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("eQTL", "Non-eQTL"), values = c("Congruent" = "#ffee00", "Non-eQTL" = "#360f70")) + 
       ggplot2::guides(fill = guide_legend(""))}
   
   if(Congruentdata == FALSE & Incongruentdata == TRUE){
-    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("Non-eQTL", "Incongruent eQTL"), values = c("Incongruent" = "#990000", "Non-eQTL" = "#C0C0C0")) +
+    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("Incongruent eQTL", "Non-eQTL"), values = c("Incongruent" = "#990000", "Non-eQTL" = "#C0C0C0")) +
       ggplot2::guides(fill = guide_legend(title = NULL))}
   
   
