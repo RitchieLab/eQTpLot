@@ -88,6 +88,7 @@
 ### Required Packages
 #require(ggnewscale)
 #require(patchwork)
+#require(dplyr)
 #require(Gviz)
 #require(GenomicRanges)
 #require(biomaRt)
@@ -1082,19 +1083,19 @@ eQTpLot <- function(GWAS.df, eQTL.df, Genes.df, LD.df = TRUE, gene, trait,
                                             tip_length=0.05)}
   
   if(Congruentdata == TRUE & Incongruentdata == TRUE){
-    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("Congruent eQTL", "Incongruent eQTL", "Non-eQTL"), values = c("Congruent" = "#000099", "Incongruent" = "#990000", "Non-eQTL" = "#C0C0C0")) + 
+    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("Congruent" = "Congruent eQTL", "Incongruent" = "Incongruent eQTL", "Non-eQTL" = "Non-eQTL"), values = c("Congruent" = "#000099", "Incongruent" = "#990000", "Non-eQTL" = "#C0C0C0")) + 
       ggplot2::guides(fill = guide_legend(title = NULL))}
   
   if(Congruentdata == TRUE & Incongruentdata == FALSE & congruence == TRUE){
-    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("Congruent eQTL", "Non-eQTL", ), values = c("Congruent" = "#000099", "Non-eQTL" = "#C0C0C0")) +
+    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("Congruent" = "Congruent eQTL", "Non-eQTL" = "Non-eQTL", ), values = c("Congruent" = "#000099", "Non-eQTL" = "#C0C0C0")) +
       ggplot2::guides(fill = guide_legend(title = NULL))}
   
   if(Congruentdata == TRUE & Incongruentdata == FALSE & congruence == FALSE){
-    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("eQTL", "Non-eQTL"), values = c("Congruent" = "#ffee00", "Non-eQTL" = "#360f70")) + 
+    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("Congruent" = "eQTL", "Non-eQTL" = "Non-eQTL"), values = c("Congruent" = "#ffee00", "Non-eQTL" = "#360f70")) + 
       ggplot2::guides(fill = guide_legend(""))}
   
   if(Congruentdata == FALSE & Incongruentdata == TRUE){
-    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("Incongruent eQTL", "Non-eQTL"), values = c("Incongruent" = "#990000", "Non-eQTL" = "#C0C0C0")) +
+    p2 <- p2 + ggplot2::scale_fill_manual(labels = c("Incongruent" = "Incongruent eQTL", "Non-eQTL" = "Non-eQTL"), values = c("Incongruent" = "#990000", "Non-eQTL" = "#C0C0C0")) +
       ggplot2::guides(fill = guide_legend(title = NULL))}
   
   
